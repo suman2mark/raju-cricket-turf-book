@@ -23,7 +23,7 @@ const Hero: React.FC<HeroProps> = ({
         }}>
           </div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent rounded-none bg-green-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent rounded-none bg-rose-950"></div>
       </div>
       
       <div className="container mx-auto px-4 z-10 text-center md:text-left md:ml-12 lg:ml-20">
