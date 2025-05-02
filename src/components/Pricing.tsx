@@ -1,14 +1,12 @@
-
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Check } from 'lucide-react';
-
 const Pricing: React.FC = () => {
-  const { translate } = useLanguage();
-
-  return (
-    <section id="pricing" className="py-20 bg-gray-50">
+  const {
+    translate
+  } = useLanguage();
+  return <section id="pricing" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">{translate('pricing_title')}</h2>
@@ -44,7 +42,7 @@ const Pricing: React.FC = () => {
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
-                    <span className="text-gray-600">UPI: 8919878315@ybl</span>
+                    <span className="text-gray-600">UPI: 9701399366@ybl</span>
                   </li>
                 </ul>
               </div>
@@ -75,7 +73,7 @@ const Pricing: React.FC = () => {
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
-                    <span className="text-gray-600">UPI: 8919878315@ybl</span>
+                    <span className="text-gray-600">UPI: 9701399366@ybl</span>
                   </li>
                 </ul>
               </div>
@@ -117,8 +115,6 @@ const Pricing: React.FC = () => {
           </Card>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Pricing;
