@@ -10,6 +10,7 @@ import ContactSection from '@/components/ContactSection';
 import LocationSection from '@/components/LocationSection';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
+import { Toaster } from 'sonner';
 
 // The main component that uses the language context
 const MainContent = () => {
@@ -26,16 +27,12 @@ const MainContent = () => {
 
   // Handle booking form submission
   const handleBookingSubmit = async (data: BookingFormData) => {
-    // In a real application, this would save the data to Supabase
+    // This is now handled in the BookingForm component
     setIsLoading(true);
-    
-    // Simulate API call with a delay
     try {
-      // For demonstration purposes only
       console.log('Booking data:', data);
-      
-      // Simulating API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Delay to simulate process completion
+      await new Promise(resolve => setTimeout(resolve, 500));
     } catch (error) {
       console.error('Error submitting booking:', error);
     } finally {
@@ -45,6 +42,7 @@ const MainContent = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <Toaster position="top-center" />
       <Header scrollToSection={scrollToSection} />
       
       <main className="flex-grow">

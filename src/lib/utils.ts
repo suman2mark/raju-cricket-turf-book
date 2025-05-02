@@ -2,7 +2,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format, isBefore, isToday, parse, set } from "date-fns";
-import { SlotTime } from "@/types";
+import { SlotTime, SlotWithStatus, BookingFormData } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -45,7 +45,7 @@ export function formatSlotTime(slot: SlotTime): string {
 
 export function isSlotExpired(slot: SlotTime, date: Date): boolean {
   if (!isToday(date)) {
-    return false;
+    return isBefore(date, new Date());
   }
 
   const now = new Date();
@@ -83,4 +83,48 @@ export function formatDate(date: Date): string {
 
 export function formatPrice(price: number): string {
   return `₹${price}`;
+}
+
+export function getSlotColor(status: SlotStatus): string {
+  switch (status) {
+    case 'available':
+      return 'bg-green-100 hover:bg-green-200 text-green-800 border-green-300';
+    case 'booked':
+      return 'bg-red-100 text-red-800 border-red-300 opacity-60 cursor-not-allowed';
+    case 'expired':
+      return 'bg-gray-100 text-gray-500 border-gray-300 opacity-60 cursor-not-allowed';
+    default:
+      return 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-300';
+  }
+}
+
+export const ADMIN_WHATSAPP_NUMBER = '9701399366';
+
+export function openWhatsAppChat(message: string): void {
+  window.open(`https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${message}`, '_blank');
+}
+
+export function openUserWhatsAppChat(phoneNumber: string, message: string): void {
+  // Remove any non-numeric characters from the phone number
+  const cleanPhoneNumber = phoneNumber.replace(/\D/g, '');
+  window.open(`https://wa.me/${cleanPhoneNumber}?text=${message}`, '_blank');
+}
+
+export function getConfirmationMessage(bookingData: BookingFormData): string {
+  if (!bookingData.slot) return '';
+  
+  const { name, date, slot } = bookingData;
+  const formattedDate = format(date, 'dd MMM yyyy');
+  const formattedSlot = formatSlotTime(slot);
+
+  return encodeURIComponent(
+    `*Booking Confirmation - Raju Sixer Adda*\n\n` +
+    `Hello ${name},\n\n` +
+    `Your booking has been confirmed!\n\n` +
+    `*Date:* ${formattedDate}\n` +
+    `*Time:* ${formattedSlot}\n` +
+    `*Price:* ₹${slot.price}\n\n` +
+    `Thank you for choosing Raju Sixer Adda!\n` +
+    `For any queries, please contact: ${ADMIN_WHATSAPP_NUMBER}`
+  );
 }

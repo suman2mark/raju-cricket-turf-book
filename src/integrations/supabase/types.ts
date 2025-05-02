@@ -9,7 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          booking_date: string
+          created_at: string
+          end_time: string
+          id: string
+          is_night_session: boolean
+          mobile_number: string
+          name: string
+          players: number
+          slot_id: string
+          start_time: string
+        }
+        Insert: {
+          booking_date: string
+          created_at?: string
+          end_time: string
+          id?: string
+          is_night_session: boolean
+          mobile_number: string
+          name: string
+          players: number
+          slot_id: string
+          start_time: string
+        }
+        Update: {
+          booking_date?: string
+          created_at?: string
+          end_time?: string
+          id?: string
+          is_night_session?: boolean
+          mobile_number?: string
+          name?: string
+          players?: number
+          slot_id?: string
+          start_time?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,13 +1,21 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SlotTime, BookingFormData } from '@/types';
-import { TIME_SLOTS, formatSlotTime, isSlotExpired, formatDate, generateWhatsAppBookingMessage } from '@/lib/utils';
+import { formatDate, 
+         formatSlotTime, 
+         openWhatsAppChat,
+         openUserWhatsAppChat, 
+         getConfirmationMessage,
+         ADMIN_WHATSAPP_NUMBER } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/components/ui/sonner';
+import SlotMap from './SlotMap';
+import { createBooking, isSlotBooked } from '@/services/bookingService';
 
 interface BookingFormProps {
   onSubmit: (data: BookingFormData) => void;
@@ -16,13 +24,20 @@ interface BookingFormProps {
 
 const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
   const { translate } = useLanguage();
-  const { toast } = useToast();
+  const { toast: hookToast } = useToast();
   const [date, setDate] = useState<Date>(new Date());
   const [selectedSlot, setSelectedSlot] = useState<SlotTime | null>(null);
   const [name, setName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [players, setPlayers] = useState<number>(2);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+
+  useEffect(() => {
+    // Clear selected slot when date changes
+    setSelectedSlot(null);
+  }, [date]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -53,10 +68,22 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSelectSlot = async (slot: SlotTime) => {
+    // Double-check if the slot is already booked
+    const booked = await isSlotBooked(slot.id, date);
+    if (booked) {
+      toast.error("This slot has already been booked by someone else.");
+      return;
+    }
+    setSelectedSlot(slot);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (validateForm()) {
+      setSubmitLoading(true);
+      
       const formData: BookingFormData = {
         name,
         mobileNumber,
@@ -65,102 +92,129 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         slot: selectedSlot
       };
       
-      onSubmit(formData);
-      
-      // Send WhatsApp message to admin
-      const whatsappNumber = '8919878315';
-      const messageText = generateWhatsAppBookingMessage(formData);
-      window.open(`https://wa.me/${whatsappNumber}?text=${messageText}`, '_blank');
-      
-      // Show success toast
-      toast({
-        title: translate('booking_success'),
-        description: `${translate('date')}: ${formatDate(date)}, ${translate('time')}: ${selectedSlot ? formatSlotTime(selectedSlot) : ''}`,
-        duration: 5000,
-      });
-      
-      // Clear form
-      setName('');
-      setMobileNumber('');
-      setPlayers(2);
-      setSelectedSlot(null);
+      try {
+        // Create booking in database
+        await createBooking(formData);
+        
+        // Send WhatsApp message to admin
+        const adminMessageText = generateWhatsAppBookingMessage(formData);
+        openWhatsAppChat(adminMessageText);
+        
+        // Send confirmation to user (if we have their number)
+        const userMessageText = getConfirmationMessage(formData);
+        openUserWhatsAppChat(mobileNumber, userMessageText);
+        
+        // Call the original onSubmit if needed
+        onSubmit(formData);
+        
+        // Show success message
+        toast.success('Booking Successful!', {
+          description: `Your slot has been booked for ${formatDate(date)}`,
+          duration: 5000,
+        });
+        
+        hookToast({
+          title: translate('booking_success'),
+          description: `${translate('date')}: ${formatDate(date)}, ${translate('time')}: ${selectedSlot ? formatSlotTime(selectedSlot) : ''}`,
+          duration: 5000,
+        });
+        
+        setBookingSuccess(true);
+        
+        // Clear form
+        setName('');
+        setMobileNumber('');
+        setPlayers(2);
+        setSelectedSlot(null);
+      } catch (error: any) {
+        // Show error message
+        toast.error('Booking Failed', {
+          description: error.message || 'Failed to create booking. Please try again.',
+          duration: 5000,
+        });
+      } finally {
+        setSubmitLoading(false);
+      }
     }
   };
 
-  // Filter slots based on expiration for today
-  const availableSlots = TIME_SLOTS.filter(slot => !isSlotExpired(slot, date));
-  
-  // Group slots by daytime/nighttime
-  const daytimeSlots = availableSlots.filter(slot => !slot.isNightSession);
-  const nighttimeSlots = availableSlots.filter(slot => slot.isNightSession);
+  const generateWhatsAppBookingMessage = (formData: BookingFormData): string => {
+    const { name, mobileNumber, players, date, slot } = formData;
+    if (!slot) return '';
+    
+    const formattedDate = formatDate(date);
+    const formattedSlot = formatSlotTime(slot);
+    
+    return encodeURIComponent(
+      `*New Booking at Raju Sixer Adda*\n\n` +
+      `*Name:* ${name}\n` +
+      `*Mobile:* ${mobileNumber}\n` +
+      `*Players:* ${players}\n` +
+      `*Date:* ${formattedDate}\n` +
+      `*Time:* ${formattedSlot}\n` +
+      `*Price:* ₹${slot.price}`
+    );
+  };
+
+  if (bookingSuccess) {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-md text-center">
+        <div className="mb-6">
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+            <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">{translate('booking_success')}</h3>
+        <p className="text-gray-600 mb-4">
+          Your booking has been confirmed for:<br />
+          <strong>{formatDate(date)}</strong><br />
+          <strong>{selectedSlot ? formatSlotTime(selectedSlot) : ''}</strong>
+        </p>
+        <p className="text-gray-500 mb-6">
+          A confirmation message has been sent to your WhatsApp number.<br />
+          For any queries, contact: {ADMIN_WHATSAPP_NUMBER}
+        </p>
+        <div className="flex space-x-3 justify-center">
+          <Button 
+            onClick={() => setBookingSuccess(false)}
+            variant="outline"
+          >
+            Make Another Booking
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-xl font-semibold mb-4">{translate('select_date')}</h3>
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={(newDate) => {
-            if (newDate) {
-              setDate(newDate);
-              setSelectedSlot(null);
-            }
-          }}
-          disabled={{ before: new Date() }}
-          className="rounded-md border shadow-sm p-3 pointer-events-auto"
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h3 className="text-xl font-semibold mb-4">{translate('select_date')}</h3>
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={(newDate) => {
+              if (newDate) {
+                setDate(newDate);
+              }
+            }}
+            disabled={{ before: new Date() }}
+            className="rounded-md border shadow-sm p-3 pointer-events-auto"
+          />
+        </div>
+        
+        <SlotMap 
+          date={date}
+          onSelectSlot={handleSelectSlot}
+          selectedSlot={selectedSlot}
         />
       </div>
       
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-xl font-semibold mb-4">{translate('available_slots')}</h3>
-        {availableSlots.length === 0 ? (
-          <p className="text-gray-500">{translate('no_slots')}</p>
-        ) : (
-          <div className="space-y-4">
-            {daytimeSlots.length > 0 && (
-              <div>
-                <h4 className="text-md font-medium text-gray-700 mb-2">{translate('daytime')}</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {daytimeSlots.map((slot) => (
-                    <button
-                      key={slot.id}
-                      className={`time-slot ${
-                        selectedSlot?.id === slot.id ? 'selected' : 'available'
-                      }`}
-                      onClick={() => setSelectedSlot(slot)}
-                    >
-                      {formatSlotTime(slot)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {nighttimeSlots.length > 0 && (
-              <div>
-                <h4 className="text-md font-medium text-gray-700 mb-2">{translate('nighttime')}</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {nighttimeSlots.map((slot) => (
-                    <button
-                      key={slot.id}
-                      className={`time-slot ${
-                        selectedSlot?.id === slot.id ? 'selected' : 'available'
-                      }`}
-                      onClick={() => setSelectedSlot(slot)}
-                    >
-                      {formatSlotTime(slot)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-      
       {/* Booking form */}
-      <div className="bg-white p-6 rounded-lg shadow-md md:col-span-2">
+      <div className="bg-white p-6 rounded-lg shadow-md">
         <h3 className="text-xl font-semibold mb-4">{translate('booking_details')}</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -229,9 +283,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
             <Button
               type="submit"
               className="w-full bg-primary hover:bg-primary/90 text-white py-6"
-              disabled={isLoading}
+              disabled={submitLoading || isLoading}
             >
-              {isLoading ? 'Loading...' : translate('confirm_booking')}
+              {submitLoading || isLoading ? 'Loading...' : translate('confirm_booking')}
             </Button>
           </div>
         </form>

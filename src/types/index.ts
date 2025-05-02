@@ -19,3 +19,9 @@ export type BookingData = BookingFormData & {
   id: string;
   createdAt: Date;
 };
+
+export type SlotStatus = 'available' | 'booked' | 'expired';
+
+export type SlotWithStatus = SlotTime & {
+  status: SlotStatus;
+};
