@@ -4,10 +4,11 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Phone, MapPin, MessageSquare } from 'lucide-react';
+import { ADMIN_WHATSAPP_NUMBER } from '@/lib/utils';
 
 const ContactSection: React.FC = () => {
   const { translate } = useLanguage();
-  const phoneNumber = '8919878315';
+  const phoneNumber = ADMIN_WHATSAPP_NUMBER;
 
   const handlePhoneClick = () => {
     window.location.href = `tel:${phoneNumber}`;
@@ -26,17 +27,17 @@ const ContactSection: React.FC = () => {
         </div>
 
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="border-2 border-primary/20 hover:shadow-lg transition-shadow">
+          <Card className="border-2 border-primary/20 hover:shadow-lg transition-shadow transform hover:scale-105 duration-300">
             <CardContent className="p-6">
               <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
                   <Phone className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold">{translate('phone')}</h3>
                 <p className="text-lg text-gray-600">{phoneNumber}</p>
                 <Button 
                   onClick={handlePhoneClick}
-                  className="bg-primary hover:bg-primary/90 text-white w-full"
+                  className="bg-primary hover:bg-primary/90 text-white w-full transform hover:translate-y-[-2px] transition-transform"
                 >
                   <Phone className="mr-2 h-4 w-4" />
                   {translate('phone')}
@@ -45,17 +46,17 @@ const ContactSection: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-2 border-primary/20 hover:shadow-lg transition-shadow">
+          <Card className="border-2 border-primary/20 hover:shadow-lg transition-shadow transform hover:scale-105 duration-300">
             <CardContent className="p-6">
               <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
                   <MessageSquare className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold">{translate('whatsapp')}</h3>
                 <p className="text-lg text-gray-600">{phoneNumber}</p>
                 <Button 
                   onClick={handleWhatsAppClick}
-                  className="bg-[#25D366] hover:bg-[#25D366]/90 text-white w-full"
+                  className="bg-[#25D366] hover:bg-[#25D366]/90 text-white w-full transform hover:translate-y-[-2px] transition-transform"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

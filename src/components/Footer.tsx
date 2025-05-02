@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ADMIN_WHATSAPP_NUMBER } from '@/lib/utils';
 
 interface FooterProps {
   scrollToSection: (sectionId: string) => void;
@@ -8,6 +9,7 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ scrollToSection }) => {
   const { translate } = useLanguage();
+  const phoneNumber = ADMIN_WHATSAPP_NUMBER;
   
   return (
     <footer className="bg-cricket-dark text-white">
@@ -32,9 +34,9 @@ const Footer: React.FC<FooterProps> = ({ scrollToSection }) => {
           <div>
             <h3 className="text-xl font-bold mb-4">{translate('contact_title')}</h3>
             <ul className="space-y-2 text-gray-300">
-              <li>{translate('phone')}: 8919878315</li>
-              <li>{translate('whatsapp')}: 8919878315</li>
-              <li>UPI: 8919878315@ybl</li>
+              <li>{translate('phone')}: {phoneNumber}</li>
+              <li>{translate('whatsapp')}: {phoneNumber}</li>
+              <li>UPI: {phoneNumber}@ybl</li>
             </ul>
           </div>
         </div>
