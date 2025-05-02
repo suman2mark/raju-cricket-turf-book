@@ -1,8 +1,7 @@
-
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format, isBefore, isToday, parse, set } from "date-fns";
-import { SlotTime, SlotWithStatus, BookingFormData } from "@/types";
+import { SlotTime, SlotWithStatus, BookingFormData, SlotStatus } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
