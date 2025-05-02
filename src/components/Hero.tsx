@@ -1,28 +1,29 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ArrowRight } from 'lucide-react';
-
 interface HeroProps {
   scrollToSection: (sectionId: string) => void;
 }
-
-const Hero: React.FC<HeroProps> = ({ scrollToSection }) => {
-  const { translate } = useLanguage();
-
-  return (
-    <section id="home" className="relative min-h-screen flex items-center pt-16">
+const Hero: React.FC<HeroProps> = ({
+  scrollToSection
+}) => {
+  const {
+    translate
+  } = useLanguage();
+  return <section id="home" className="relative min-h-screen flex items-center pt-16">
       <div className="absolute inset-0 z-0">
         <div className="grid grid-cols-1 md:grid-cols-2 h-full">
-          <div className="h-[40vh] md:h-full bg-cover bg-center" 
-               style={{ backgroundImage: "url('/lovable-uploads/a6069148-c1b1-4c4e-9025-39f6a6f9afd8.png')" }}>
+          <div className="h-[40vh] md:h-full bg-cover bg-center" style={{
+          backgroundImage: "url('/lovable-uploads/a6069148-c1b1-4c4e-9025-39f6a6f9afd8.png')"
+        }}>
           </div>
-          <div className="h-[40vh] md:h-full bg-cover bg-center hidden md:block" 
-               style={{ backgroundImage: "url('/lovable-uploads/361badd0-5f37-4415-9830-0c639bdfd5cb.png')" }}>
+          <div className="h-[40vh] md:h-full bg-cover bg-center hidden md:block" style={{
+          backgroundImage: "url('/lovable-uploads/361badd0-5f37-4415-9830-0c639bdfd5cb.png')"
+        }}>
           </div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent rounded-none bg-green-500"></div>
       </div>
       
       <div className="container mx-auto px-4 z-10 text-center md:text-left md:ml-12 lg:ml-20">
@@ -42,11 +43,7 @@ const Hero: React.FC<HeroProps> = ({ scrollToSection }) => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Button 
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg group relative overflow-hidden"
-              onClick={() => scrollToSection('booking')}
-            >
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg group relative overflow-hidden" onClick={() => scrollToSection('booking')}>
               <span className="relative z-10 flex items-center">
                 {translate('book_now')}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -54,12 +51,7 @@ const Hero: React.FC<HeroProps> = ({ scrollToSection }) => {
               <span className="absolute inset-0 bg-white/20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
             </Button>
             
-            <Button 
-              variant="outline"
-              size="lg" 
-              className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border-white/30 text-white px-8 py-6 text-lg group"
-              onClick={() => scrollToSection('pricing')}
-            >
+            <Button variant="outline" size="lg" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border-white/30 text-white px-8 py-6 text-lg group" onClick={() => scrollToSection('pricing')}>
               <span className="relative z-10">{translate('view_slots')}</span>
               <span className="absolute inset-0 bg-white/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
             </Button>
@@ -71,26 +63,19 @@ const Hero: React.FC<HeroProps> = ({ scrollToSection }) => {
               <div className="w-10 h-10 rounded-full bg-cricket-stumps flex items-center justify-center text-cricket-dark font-bold border-2 border-white">4</div>
               <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-cricket-dark font-bold border-2 border-white">W</div>
             </div>
-            <span className="text-white/80 text-sm">
-              {translate('join_players') || '100+ happy cricketers each week'}
-            </span>
+            
           </div>
         </div>
       </div>
       
       <div className="absolute bottom-8 left-0 right-0 flex justify-center animate-bounce">
-        <button 
-          onClick={() => scrollToSection('booking')}
-          className="text-white/80 hover:text-white flex flex-col items-center"
-        >
+        <button onClick={() => scrollToSection('booking')} className="text-white/80 hover:text-white flex flex-col items-center">
           <span className="mb-2">{translate('scroll_down') || 'Scroll Down'}</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 5v14M5 12l7 7 7-7"/>
+            <path d="M12 5v14M5 12l7 7 7-7" />
           </svg>
         </button>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
