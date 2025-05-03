@@ -20,6 +20,11 @@ const GroundGallery: React.FC = () => {
       src: '/lovable-uploads/peddi3.gif',
       alt: 'Fast. Fierce. Fun.',
       caption: translate('Unbox the Cricket Fever!') || 'Smash It at Raju Sixer Adda'
+    },
+    {
+      src: '/lovable-uploads/box4.gif',
+      alt: 'Big Hits. Small Space.',
+      caption: translate('Short Format. Big Thrill. Real Cricket.') || 'Smash It at Raju Sixer Adda'
     }
 
   ];
