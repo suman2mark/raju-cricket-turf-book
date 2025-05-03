@@ -50,6 +50,7 @@ const MainContent = () => {
       
       <main className="flex-grow">
         <Hero scrollToSection={scrollToSection} />
+        <GroundGallery />
         
         <section id="booking" className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -62,7 +63,6 @@ const MainContent = () => {
           </div>
         </section>
         
-        <GroundGallery />
         <Pricing />
         <ContactSection />
         <LocationSection />

@@ -15,16 +15,24 @@ const Hero: React.FC<HeroProps> = ({
     translate
   } = useLanguage();
   
+  // Banner images with the new uploads
+  const bannerImages = [
+    '/lovable-uploads/fa905360-1f15-41a2-a735-8717be438e39.png',
+    '/lovable-uploads/89ee2646-bf20-46b4-9ff1-1576451d43f1.png',
+    '/lovable-uploads/d1793b94-34d0-4c7c-a44d-a22b2fbafb01.png'
+  ];
+  
+  // Use first image for mobile, show both on desktop
   return (
     <section id="home" className="relative min-h-screen flex items-center pt-16">
       <div className="absolute inset-0 z-0">
         <div className="grid grid-cols-1 md:grid-cols-2 h-full">
           <div className="h-[40vh] md:h-full bg-cover bg-center" style={{
-            backgroundImage: "url('/lovable-uploads/8911d801-ca01-46c9-994b-49ffb4ea0c4d.png')"
+            backgroundImage: `url('${bannerImages[0]}')`
           }}>
           </div>
           <div className="h-[40vh] md:h-full bg-cover bg-center hidden md:block" style={{
-            backgroundImage: "url('/lovable-uploads/31637c3f-4ddb-4ecb-aa61-689aac331a11.png')"
+            backgroundImage: `url('${bannerImages[1]}')`
           }}>
           </div>
         </div>
@@ -68,7 +76,6 @@ const Hero: React.FC<HeroProps> = ({
               <div className="w-10 h-10 rounded-full bg-cricket-stumps flex items-center justify-center text-cricket-dark font-bold border-2 border-white">4</div>
               <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-cricket-dark font-bold border-2 border-white">W</div>
             </div>
-            
           </div>
         </div>
       </div>
