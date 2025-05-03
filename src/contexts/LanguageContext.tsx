@@ -37,7 +37,7 @@ const translations: Record<string, Record<Language, string>> = {
     telugu: "రాజు సిక్సర్ అడ్డా"
   },
   "hero_subtitle": {
-    english: "Premium Cricket Turf in Dwarapudi",
+    english: "Premium Cricket Turf in Dwarapudi, Vizianagaram",
     telugu: "ద్వారపూడిలో ప్రీమియం క్రికెట్ టర్ఫ్"
   },
   "book_now": {
@@ -56,6 +56,10 @@ const translations: Record<string, Record<Language, string>> = {
   "booking_subtitle": {
     english: "Select date and time to book the cricket turf",
     telugu: "క్రికెట్ టర్ఫ్‌ని బుక్ చేయడానికి తేదీ మరియు సమయాన్ని ఎంచుకోండి"
+  },
+  "spot_payment_reminder": {
+  "english": "For spot payments, please arrive 10 minutes before your slot time to hold your spot.  Your slot may be given to the next person in the queue if you're late and someone has booked online.", 
+  "telugu": "మీ స్లాట్ సమయానికి 10 నిమిషాల ముందుగా రావాలని మనవి. స్పాట్ పేమెంట్స్ కోసం, మీరు ఆలస్యంగా వచ్చినట్లయితే మరియు ఎవరైనా ఆన్‌లైన్‌లో బుక్ చేసుంటే, మీ స్లాట్ తదుపరి వ్యక్తికి ఇవ్వబడవచ్చు."
   },
   "select_date": {
     english: "Select Date",
