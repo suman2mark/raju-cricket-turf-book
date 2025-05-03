@@ -52,8 +52,8 @@ const GroundGallery: React.FC = () => {
     <section id="gallery" className="w-full py-8 bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">{translate('our_facilities') || 'Our Cricket Facilities'}</h2>
-          <p className="text-gray-600">{translate('gallery_subtitle') || 'Experience our premium cricket turf day and night'}</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">{translate('Cricket Under Lights, Cheers Under Stars – Reserve Your Slot Now!') || 'Our Cricket Facilities'}</h2>
+          <p className="text-gray-600">{translate('Smash It in the Box!') || 'Experience our premium cricket turf day and night'}</p>
         </div>
         
         <Carousel
