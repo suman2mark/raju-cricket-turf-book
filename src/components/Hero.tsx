@@ -16,9 +16,9 @@ const Hero: React.FC<HeroProps> = ({
   
   // Banner images with the uploaded cricket ground images
   const bannerImages = [
-    '/lovable-uploads/e260a3e2-7dcb-433d-888b-62ed8fc68575.png',
-    '/lovable-uploads/61bd8975-1238-441d-bd54-84604dc8e522.png',
-    '/lovable-uploads/03e05ff6-50a3-4ad9-b2dd-8cc749c35287.png'
+    '/lovable-uploads/box1.jpg',
+    '/lovable-uploads/box2.webp',
+    '/lovable-uploads/box3.webp'
   ];
 
   // Auto-rotate banner images
