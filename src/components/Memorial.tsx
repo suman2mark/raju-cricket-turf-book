@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 const Memorial: React.FC = () => {
   return (
-    <div className="fixed top-4 right-4 z-50">
+    <div className="fixed top-4 left-5 z-50">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
