@@ -20,12 +20,8 @@ const GroundGallery: React.FC = () => {
       src: '/lovable-uploads/peddi3.gif',
       alt: 'Fast. Fierce. Fun.',
       caption: translate('Unbox the Cricket Fever!') || 'Smash It at Raju Sixer Adda'
-    },
-    {
-      src: '/lovable-uploads/box4.jpg',
-      alt: 'Smash It in the Box!',
-      caption: translate('smash_it') || 'Premium Cricket Experience'
     }
+
   ];
 
   // Auto-rotate carousel
