@@ -136,8 +136,8 @@ const translations: Record<string, Record<Language, string>> = {
     telugu: "ఉదయం 9 - సాయంత్రం 6: ₹7,999"
   },
   "tournament_contact": {
-    english: "For Tournament Bookings, please contact: 8919878315",
-    telugu: "టోర్నమెంట్ బుకింగ్ల కోసం, దయచేసి సంప్రదించండి: 8919878315"
+    english: "For Tournament Bookings, please contact: 9701399366",
+    telugu: "టోర్నమెంట్ బుకింగ్ల కోసం, దయచేసి సంప్రదించండి: 9701399366"
   },
   "student_title": {
     english: "Student Specials!",
@@ -185,8 +185,8 @@ const translations: Record<string, Record<Language, string>> = {
     telugu: "ద్వారపూడి, విజయనగరం జిల్లా, ఆంధ్రప్రదేశ్‌లో మాకు కనుగొనండి"
   },
   "payment_info": {
-    english: "UPI: 8919878315@ybl",
-    telugu: "UPI: 8919878315@ybl"
+    english: "UPI: 9701399366@ybl",
+    telugu: "UPI: 9701399366@ybl"
   },
   // Form validation
   "required": {
