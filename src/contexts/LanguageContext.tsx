@@ -206,13 +206,13 @@ const translations: Record<string, Record<Language, string>> = {
     telugu: "కనీసం 2 మంది ఆటగాళ్లు అవసరం"
   },
   "max_players": {
-    english: "Maximum 16 players allowed",
-    telugu: "గరిష్టంగా 16 మంది ఆటగాళ్లు అనుమతించబడతారు"
+    english: "Maximum 12 players allowed",
+    telugu: "గరిష్టంగా 12 మంది ఆటగాళ్లు అనుమతించబడతారు"
   },
   // Success messages
   "booking_success": {
-    english: "Booking confirmed! A confirmation has been sent to your WhatsApp.",
-    telugu: "బుకింగ్ నిర్ధారించబడింది! నిర్ధారణ మీ WhatsAppకి పంపబడింది."
+    english: "Booking confirmed! Please carry a screenshot of your confirmation with slot details when arriving for spot entry.",
+    telugu: "బుకింగ్ నిర్ధారించబడింది! స్పాట్ ఎంట్రీ కోసం వచ్చేటప్పుడు, స్లాట్ వివరాలతో ఉన్న బుకింగ్ కన్ఫర్మేషన్ స్క్రీన్‌షాట్‌ను తీసుకురావడం మర్చిపోవద్దు.."
   },
   // Footer
   "copyright": {
