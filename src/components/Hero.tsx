@@ -1,26 +1,31 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ArrowRight } from 'lucide-react';
+
 interface HeroProps {
   scrollToSection: (sectionId: string) => void;
 }
+
 const Hero: React.FC<HeroProps> = ({
   scrollToSection
 }) => {
   const {
     translate
   } = useLanguage();
-  return <section id="home" className="relative min-h-screen flex items-center pt-16">
+  
+  return (
+    <section id="home" className="relative min-h-screen flex items-center pt-16">
       <div className="absolute inset-0 z-0">
         <div className="grid grid-cols-1 md:grid-cols-2 h-full">
           <div className="h-[40vh] md:h-full bg-cover bg-center" style={{
-          backgroundImage: "url('/lovable-uploads/a6069148-c1b1-4c4e-9025-39f6a6f9afd8.png')"
-        }}>
+            backgroundImage: "url('/lovable-uploads/8911d801-ca01-46c9-994b-49ffb4ea0c4d.png')"
+          }}>
           </div>
           <div className="h-[40vh] md:h-full bg-cover bg-center hidden md:block" style={{
-          backgroundImage: "url('/lovable-uploads/361badd0-5f37-4415-9830-0c639bdfd5cb.png')"
-        }}>
+            backgroundImage: "url('/lovable-uploads/31637c3f-4ddb-4ecb-aa61-689aac331a11.png')"
+          }}>
           </div>
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent rounded-none bg-rose-950"></div>
@@ -76,6 +81,8 @@ const Hero: React.FC<HeroProps> = ({
           </svg>
         </button>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default Hero;

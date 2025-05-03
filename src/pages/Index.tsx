@@ -11,6 +11,7 @@ import LocationSection from '@/components/LocationSection';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import GroundGallery from '@/components/GroundGallery';
+import Memorial from '@/components/Memorial';
 import { Toaster } from 'sonner';
 
 // The main component that uses the language context
@@ -45,6 +46,7 @@ const MainContent = () => {
     <div className="flex flex-col min-h-screen">
       <Toaster position="top-center" />
       <Header scrollToSection={scrollToSection} />
+      <Memorial />
       
       <main className="flex-grow">
         <Hero scrollToSection={scrollToSection} />
