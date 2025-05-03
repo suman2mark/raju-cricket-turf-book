@@ -27,9 +27,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="container mx-auto flex justify-between items-center px-4">
         <div className="flex items-center space-x-2">
           
-          <h1 className={`text-xl md:text-2xl font-bold ${isScrolled ? 'text-cricket-dark' : 'text-white'} hidden sm:block transition-colors duration-300`}>
-            {translate('hero_title')}
-          </h1>
+          
         </div>
         
         <nav className="hidden md:flex items-center space-x-6">
