@@ -46,10 +46,15 @@ const MainContent = () => {
     <div className="flex flex-col min-h-screen">
       <Toaster position="top-center" />
       <Header scrollToSection={scrollToSection} />
+      
+      {/* Memorial placed at the top right */}
       <Memorial />
       
       <main className="flex-grow">
+        {/* Hero section with the banner images */}
         <Hero scrollToSection={scrollToSection} />
+        
+        {/* Ground gallery section moved after hero */}
         <GroundGallery />
         
         <section id="booking" className="py-20 bg-white">

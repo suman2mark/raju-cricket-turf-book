@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ArrowRight } from 'lucide-react';
@@ -11,32 +11,39 @@ interface HeroProps {
 const Hero: React.FC<HeroProps> = ({
   scrollToSection
 }) => {
-  const {
-    translate
-  } = useLanguage();
+  const { translate } = useLanguage();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Banner images with the new uploads
   const bannerImages = [
-    '/lovable-uploads/fa905360-1f15-41a2-a735-8717be438e39.png',
-    '/lovable-uploads/89ee2646-bf20-46b4-9ff1-1576451d43f1.png',
-    '/lovable-uploads/d1793b94-34d0-4c7c-a44d-a22b2fbafb01.png'
+    '/lovable-uploads/e260a3e2-7dcb-433d-888b-62ed8fc68575.png',
+    '/lovable-uploads/61bd8975-1238-441d-bd54-84604dc8e522.png',
+    '/lovable-uploads/03e05ff6-50a3-4ad9-b2dd-8cc749c35287.png'
   ];
+
+  // Auto-rotate banner images
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [bannerImages.length]);
   
-  // Use first image for mobile, show both on desktop
   return (
     <section id="home" className="relative min-h-screen flex items-center pt-16">
+      {/* Full screen banner with sliding images */}
       <div className="absolute inset-0 z-0">
-        <div className="grid grid-cols-1 md:grid-cols-2 h-full">
-          <div className="h-[40vh] md:h-full bg-cover bg-center" style={{
-            backgroundImage: `url('${bannerImages[0]}')`
-          }}>
-          </div>
-          <div className="h-[40vh] md:h-full bg-cover bg-center hidden md:block" style={{
-            backgroundImage: `url('${bannerImages[1]}')`
-          }}>
-          </div>
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent rounded-none bg-rose-950"></div>
+        {bannerImages.map((img, index) => (
+          <div 
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 bg-cover bg-center ${
+              index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ backgroundImage: `url('${img}')` }}
+          />
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
       </div>
       
       <div className="container mx-auto px-4 z-10 text-center md:text-left md:ml-12 lg:ml-20">
@@ -70,12 +77,20 @@ const Hero: React.FC<HeroProps> = ({
             </Button>
           </div>
           
-          <div className="mt-8 flex items-center justify-center md:justify-start space-x-4">
-            <div className="flex -space-x-3">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold border-2 border-white">6</div>
-              <div className="w-10 h-10 rounded-full bg-cricket-stumps flex items-center justify-center text-cricket-dark font-bold border-2 border-white">4</div>
-              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-cricket-dark font-bold border-2 border-white">W</div>
-            </div>
+          {/* Slide indicators */}
+          <div className="mt-8 flex items-center justify-center md:justify-start space-x-3">
+            {bannerImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentImageIndex(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentImageIndex 
+                    ? 'bg-primary scale-125' 
+                    : 'bg-white/50 hover:bg-white/80'
+                }`}
+                aria-label={`Slide ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
       </div>
