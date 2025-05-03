@@ -50,7 +50,7 @@ const translations: Record<string, Record<Language, string>> = {
   },
   // Booking section
   "booking_title": {
-    english: "Book Your Slot",
+    english: "Book Your Slot.. ***For spot payments, please arrive 10 minutes before your slot time to hold your spot.  Your slot may be given to the next person in the queue if you're late and someone has booked online.",
     telugu: "మీ స్లాట్‌ని బుక్ చేయండి"
   },
   "booking_subtitle": {
