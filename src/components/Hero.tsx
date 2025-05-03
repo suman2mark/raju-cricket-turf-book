@@ -14,7 +14,7 @@ const Hero: React.FC<HeroProps> = ({
   const { translate } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  // Banner images with the new uploads
+  // Banner images with the uploaded cricket ground images
   const bannerImages = [
     '/lovable-uploads/e260a3e2-7dcb-433d-888b-62ed8fc68575.png',
     '/lovable-uploads/61bd8975-1238-441d-bd54-84604dc8e522.png',
