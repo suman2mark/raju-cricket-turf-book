@@ -12,17 +12,17 @@ const GroundGallery: React.FC = () => {
   // Gallery images with cricket ground scenes
   const galleryImages = [
     {
-      src: '/lovable-uploads/e260a3e2-7dcb-433d-888b-62ed8fc68575.png',
+      src: '/lovable-uploads/peddi4.gif',
       alt: 'Night cricket ground with floodlights',
       caption: translate('book_your_game') || 'Book Your Game Now'
     },
     {
-      src: '/lovable-uploads/61bd8975-1238-441d-bd54-84604dc8e522.png',
+      src: '/lovable-uploads/peddi3.gif',
       alt: 'Day time cricket ground',
       caption: translate('smash_it') || 'Smash It at Raju Sixer Adda'
     },
     {
-      src: '/lovable-uploads/03e05ff6-50a3-4ad9-b2dd-8cc749c35287.png',
+      src: '/lovable-uploads/peddi2.mp4',
       alt: 'Cricket ground with equipment closeup',
       caption: translate('premium_experience') || 'Premium Cricket Experience'
     }
