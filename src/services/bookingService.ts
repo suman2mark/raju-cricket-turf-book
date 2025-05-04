@@ -103,4 +103,3 @@ export function sendWhatsAppNotification(to: string, message: string): boolean {
     return false;
   }
 }
-

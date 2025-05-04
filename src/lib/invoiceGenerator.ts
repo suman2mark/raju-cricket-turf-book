@@ -61,7 +61,7 @@ export function generateInvoicePDF(bookingData: BookingFormData): void {
   const total = subtotal + gstAmount;
   
   // Create a table for payment details
-  (doc as any).autoTable({
+  doc.autoTable({
     startY: 150,
     head: [['Description', 'Amount']],
     body: [

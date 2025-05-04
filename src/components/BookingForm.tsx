@@ -197,8 +197,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
           <p className="text-gray-800 mb-2">
             Your booking has been confirmed for:
           </p>
-          <p className="text-lg font-bold mb-1">{formatDate(date)}</p>
-          <p className="text-lg font-bold">{selectedSlot ? formatSlotTime(selectedSlot) : ''}</p>
+          <p className="text-lg font-bold mb-1">{formatDate(bookingData.date)}</p>
+          <p className="text-lg font-bold">{bookingData.slot ? formatSlotTime(bookingData.slot) : ''}</p>
           
           {bookingData && bookingData.slot && (
             <p className="mt-2 font-medium">Amount: ₹{bookingData.slot.price}</p>
@@ -233,7 +233,13 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
           </Button>
           
           <Button 
-            onClick={() => setBookingSuccess(false)}
+            onClick={() => {
+              setBookingSuccess(false);
+              setSelectedSlot(null);
+              setName('');
+              setMobileNumber('');
+              setPlayers(2);
+            }}
             variant="outline"
           >
             Make Another Booking
