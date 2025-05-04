@@ -74,3 +74,33 @@ export async function getBookingsForDate(date: Date): Promise<any[]> {
   
   return data || [];
 }
+
+// Helper function to format WhatsApp number correctly
+export function formatWhatsAppNumber(number: string): string {
+  // Remove any non-numeric characters
+  const cleanNumber = number.replace(/\D/g, '');
+  
+  // If the number doesn't have a country code, add Indian code (91)
+  if (cleanNumber.length === 10) {
+    return `91${cleanNumber}`;
+  }
+  
+  return cleanNumber;
+}
+
+// Send WhatsApp notification directly with proper formatting
+export function sendWhatsAppNotification(to: string, message: string): boolean {
+  try {
+    const formattedNumber = formatWhatsAppNumber(to);
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedNumber}&text=${encodedMessage}`;
+    
+    // Open in new tab for admin notifications
+    window.open(whatsappUrl, '_blank');
+    return true;
+  } catch (error) {
+    console.error("Failed to send WhatsApp notification:", error);
+    return false;
+  }
+}
+

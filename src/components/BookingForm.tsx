@@ -8,14 +8,18 @@ import { Label } from '@/components/ui/label';
 import { SlotTime, BookingFormData } from '@/types';
 import { formatDate, 
          formatSlotTime, 
-         openWhatsAppChat,
-         openUserWhatsAppChat, 
-         getConfirmationMessage,
          ADMIN_WHATSAPP_NUMBER } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { toast } from '@/components/ui/sonner';
 import SlotMap from './SlotMap';
-import { createBooking, isSlotBooked } from '@/services/bookingService';
+import { 
+  createBooking, 
+  isSlotBooked, 
+  sendWhatsAppNotification, 
+  formatWhatsAppNumber 
+} from '@/services/bookingService';
+import { generateInvoicePDF } from '@/lib/invoiceGenerator';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 interface BookingFormProps {
   onSubmit: (data: BookingFormData) => void;
@@ -33,6 +37,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitLoading, setSubmitLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [bookingData, setBookingData] = useState<BookingFormData | null>(null);
 
   useEffect(() => {
     // Clear selected slot when date changes
@@ -78,6 +83,39 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     setSelectedSlot(slot);
   };
 
+  const generateWhatsAppBookingMessage = (formData: BookingFormData): string => {
+    const { name, mobileNumber, players, date, slot } = formData;
+    if (!slot) return '';
+    
+    const formattedDate = formatDate(date);
+    const formattedSlot = formatSlotTime(slot);
+    
+    return `*New Booking at Raju Sixer Adda*\n\n` +
+      `*Name:* ${name}\n` +
+      `*Mobile:* ${mobileNumber}\n` +
+      `*Players:* ${players}\n` +
+      `*Date:* ${formattedDate}\n` +
+      `*Time:* ${formattedSlot}\n` +
+      `*Price:* ₹${slot.price}`;
+  };
+
+  const getConfirmationMessage = (formData: BookingFormData): string => {
+    if (!formData.slot) return '';
+    
+    const { name, date, slot } = formData;
+    const formattedDate = formatDate(date);
+    const formattedSlot = formatSlotTime(slot);
+
+    return `*Booking Confirmation - Raju Sixer Adda*\n\n` +
+      `Hello ${name},\n\n` +
+      `Your booking has been confirmed!\n\n` +
+      `*Date:* ${formattedDate}\n` +
+      `*Time:* ${formattedSlot}\n` +
+      `*Price:* ₹${slot.price}\n\n` +
+      `Thank you for choosing Raju Sixer Adda!\n` +
+      `For any queries, please contact: ${ADMIN_WHATSAPP_NUMBER}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -96,13 +134,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         // Create booking in database
         await createBooking(formData);
         
+        // Store booking data for success screen
+        setBookingData(formData);
+        
         // Send WhatsApp message to admin
         const adminMessageText = generateWhatsAppBookingMessage(formData);
-        openWhatsAppChat(adminMessageText);
+        sendWhatsAppNotification(ADMIN_WHATSAPP_NUMBER, adminMessageText);
         
-        // Send confirmation to user (if we have their number)
-        const userMessageText = getConfirmationMessage(formData);
-        openUserWhatsAppChat(mobileNumber, userMessageText);
+        // Generate and download PDF invoice
+        generateInvoicePDF(formData);
         
         // Call the original onSubmit if needed
         onSubmit(formData);
@@ -121,11 +161,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         
         setBookingSuccess(true);
         
-        // Clear form
-        setName('');
-        setMobileNumber('');
-        setPlayers(2);
-        setSelectedSlot(null);
       } catch (error: any) {
         // Show error message
         toast.error('Booking Failed', {
@@ -138,45 +173,64 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     }
   };
 
-  const generateWhatsAppBookingMessage = (formData: BookingFormData): string => {
-    const { name, mobileNumber, players, date, slot } = formData;
-    if (!slot) return '';
-    
-    const formattedDate = formatDate(date);
-    const formattedSlot = formatSlotTime(slot);
-    
-    return encodeURIComponent(
-      `*New Booking at Raju Sixer Adda*\n\n` +
-      `*Name:* ${name}\n` +
-      `*Mobile:* ${mobileNumber}\n` +
-      `*Players:* ${players}\n` +
-      `*Date:* ${formattedDate}\n` +
-      `*Time:* ${formattedSlot}\n` +
-      `*Price:* ₹${slot.price}`
-    );
+  const handleDownloadInvoice = () => {
+    if (bookingData) {
+      generateInvoicePDF(bookingData);
+    }
   };
 
   if (bookingSuccess) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md text-center">
         <div className="mb-6">
-          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-            <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100">
+            <svg className="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
             </svg>
           </div>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">{translate('booking_success')}</h3>
-        <p className="text-gray-600 mb-4">
-          Your booking has been confirmed for:<br />
-          <strong>{formatDate(date)}</strong><br />
-          <strong>{selectedSlot ? formatSlotTime(selectedSlot) : ''}</strong>
-        </p>
+        
+        <h3 className="text-2xl font-medium text-gray-900 mb-2">{translate('booking_success')}</h3>
+        
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+          <p className="text-gray-800 mb-2">
+            Your booking has been confirmed for:
+          </p>
+          <p className="text-lg font-bold mb-1">{formatDate(date)}</p>
+          <p className="text-lg font-bold">{selectedSlot ? formatSlotTime(selectedSlot) : ''}</p>
+          
+          {bookingData && bookingData.slot && (
+            <p className="mt-2 font-medium">Amount: ₹{bookingData.slot.price}</p>
+          )}
+        </div>
+        
+        <Alert className="mb-6 text-left">
+          <AlertTitle>Next steps:</AlertTitle>
+          <AlertDescription>
+            <ul className="list-disc pl-5 space-y-1 mt-2">
+              <li>A confirmation has been sent to the admin via WhatsApp.</li>
+              <li>Your invoice has been downloaded automatically.</li>
+              <li>Please arrive 15 minutes before your slot time.</li>
+              <li>Payment to be made at the venue.</li>
+            </ul>
+          </AlertDescription>
+        </Alert>
+        
         <p className="text-gray-500 mb-6">
-          A confirmation message has been sent to your WhatsApp number.<br />
           For any queries, contact: {ADMIN_WHATSAPP_NUMBER}
         </p>
-        <div className="flex space-x-3 justify-center">
+        
+        <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 justify-center">
+          <Button 
+            onClick={handleDownloadInvoice}
+            className="flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Download Invoice Again
+          </Button>
+          
           <Button 
             onClick={() => setBookingSuccess(false)}
             variant="outline"
