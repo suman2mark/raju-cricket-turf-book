@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SlotTime, BookingFormData } from '@/types';
-import { formatSlotTime, ADMIN_WHATSAPP_NUMBER } from '@/lib/utils';
+import { formatSlotTime, ADMIN_WHATSAPP_NUMBER, formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { toast } from '@/components/ui/sonner';
 import SlotMap from './SlotMap';
@@ -67,28 +68,17 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
 
   const handleSelectSlot = async (slot: SlotTime) => {
     // Double-check if the slot is already booked
-    const booked = await isSlotBooked(slot.id, date);
-    if (booked) {
-      toast.error("This slot has already been booked by someone else.");
-      return;
+    try {
+      const booked = await isSlotBooked(slot.id, date);
+      if (booked) {
+        toast.error("This slot has already been booked by someone else.");
+        return;
+      }
+      setSelectedSlot(slot);
+    } catch (error) {
+      console.error("Error checking slot availability:", error);
+      toast.error("Failed to check slot availability");
     }
-    setSelectedSlot(slot);
-  };
-
-  const generateWhatsAppBookingMessage = (formData: BookingFormData): string => {
-    const { name, mobileNumber, players, date, slot } = formData;
-    if (!slot) return '';
-    
-    const formattedDate = formatDate(date);
-    const formattedSlot = formatSlotTime(slot);
-    
-    return `*New Booking at Raju Sixer Adda*\n\n` +
-      `*Name:* ${name}\n` +
-      `*Mobile:* ${mobileNumber}\n` +
-      `*Players:* ${players}\n` +
-      `*Date:* ${formattedDate}\n` +
-      `*Time:* ${formattedSlot}\n` +
-      `*Price:* ₹${slot.price}`;
   };
 
   const getConfirmationMessage = (formData: BookingFormData): string => {
@@ -123,6 +113,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
       };
       
       try {
+        console.log("Creating booking with data:", formData);
+        
         // Create booking in database
         await createBooking(formData);
         
@@ -130,11 +122,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         setBookingData(formData);
         
         // Send WhatsApp message to admin
-        const adminMessageText = generateWhatsAppBookingMessage(formData);
-        sendWhatsAppNotification(ADMIN_WHATSAPP_NUMBER, adminMessageText);
+        try {
+          const adminMessageText = getConfirmationMessage(formData);
+          sendWhatsAppNotification(ADMIN_WHATSAPP_NUMBER, adminMessageText);
+        } catch (whatsappError) {
+          console.error("Error sending WhatsApp notification:", whatsappError);
+        }
         
-        // Generate and download PDF invoice
-        generateInvoicePDF(formData);
+        try {
+          // Generate and download PDF invoice
+          generateInvoicePDF(formData);
+        } catch (pdfError) {
+          console.error("Error generating PDF:", pdfError);
+        }
         
         // Call the original onSubmit if needed
         onSubmit(formData);
@@ -154,6 +154,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         setBookingSuccess(true);
         
       } catch (error: any) {
+        console.error("Booking error:", error);
         // Show error message
         toast.error('Booking Failed', {
           description: error.message || 'Failed to create booking. Please try again.',
@@ -171,15 +172,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     setName('');
     setMobileNumber('');
     setPlayers(2);
-  };
-
-  // Import the formatDate function which was used in the original component
-  const formatDate = (date: Date): string => {
-    return new Intl.DateTimeFormat('en-US', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    }).format(date);
   };
 
   // Show success screen if booking was successful

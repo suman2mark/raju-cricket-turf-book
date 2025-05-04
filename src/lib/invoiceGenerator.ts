@@ -2,15 +2,7 @@
 import { BookingFormData } from '@/types';
 import { formatDate, formatSlotTime } from './utils';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
-import { format as dateFormat } from 'date-fns';
-
-// Extend the jsPDF type to include autoTable
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
-  }
-}
+import autoTable from 'jspdf-autotable';
 
 export function generateInvoicePDF(bookingData: BookingFormData): void {
   if (!bookingData.slot) return;
@@ -60,8 +52,8 @@ export function generateInvoicePDF(bookingData: BookingFormData): void {
   const gstAmount = (subtotal * gstRate) / 100;
   const total = subtotal + gstAmount;
   
-  // Create a table for payment details
-  doc.autoTable({
+  // Create a table for payment details using autoTable directly
+  autoTable(doc, {
     startY: 150,
     head: [['Description', 'Amount']],
     body: [
@@ -92,6 +84,6 @@ export function generateInvoicePDF(bookingData: BookingFormData): void {
   doc.text("Contact: 9701399366", 105, 286, { align: 'center' });
   
   // Save the PDF with a filename based on booking details
-  const fileName = `RajuSixerAdda_Booking_${dateFormat(bookingData.date, 'yyyyMMdd')}_${bookingData.slot.id}.pdf`;
+  const fileName = `RajuSixerAdda_Booking_${bookingData.date.toISOString().split('T')[0]}_${bookingData.slot.id}.pdf`;
   doc.save(fileName);
 }

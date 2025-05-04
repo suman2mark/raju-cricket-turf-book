@@ -16,8 +16,15 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({
   onResetForm 
 }) => {
   const handleDownloadInvoice = () => {
-    if (bookingData) {
-      generateInvoicePDF(bookingData);
+    try {
+      console.log("Generating invoice for booking data:", bookingData);
+      if (bookingData && bookingData.slot) {
+        generateInvoicePDF(bookingData);
+      } else {
+        console.error("Cannot generate invoice: Invalid booking data");
+      }
+    } catch (error) {
+      console.error("Error generating invoice:", error);
     }
   };
 
