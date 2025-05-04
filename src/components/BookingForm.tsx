@@ -1,25 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Calendar } from '@/components/ui/calendar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { SlotTime, BookingFormData } from '@/types';
-import { formatDate, 
-         formatSlotTime, 
-         ADMIN_WHATSAPP_NUMBER } from '@/lib/utils';
+import { formatSlotTime, ADMIN_WHATSAPP_NUMBER } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { toast } from '@/components/ui/sonner';
 import SlotMap from './SlotMap';
 import { 
   createBooking, 
   isSlotBooked, 
-  sendWhatsAppNotification, 
-  formatWhatsAppNumber 
+  sendWhatsAppNotification
 } from '@/services/bookingService';
 import { generateInvoicePDF } from '@/lib/invoiceGenerator';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { BookingCalendar, BookingDetails, BookingSuccess } from './booking';
 
 interface BookingFormProps {
   onSubmit: (data: BookingFormData) => void;
@@ -173,100 +165,37 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     }
   };
 
-  const handleDownloadInvoice = () => {
-    if (bookingData) {
-      generateInvoicePDF(bookingData);
-    }
+  const resetForm = () => {
+    setBookingSuccess(false);
+    setSelectedSlot(null);
+    setName('');
+    setMobileNumber('');
+    setPlayers(2);
+  };
+
+  // Import the formatDate function which was used in the original component
+  const formatDate = (date: Date): string => {
+    return new Intl.DateTimeFormat('en-US', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(date);
   };
 
   // Show success screen if booking was successful
   if (bookingSuccess && bookingData) {
-    return (
-      <div className="bg-white p-6 rounded-lg shadow-md text-center">
-        <div className="mb-6">
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100">
-            <svg className="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-          </div>
-        </div>
-        
-        <h3 className="text-2xl font-medium text-gray-900 mb-2">{translate('booking_success')}</h3>
-        
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-          <p className="text-gray-800 mb-2">
-            Your booking has been confirmed for:
-          </p>
-          <p className="text-lg font-bold mb-1">{formatDate(bookingData.date)}</p>
-          <p className="text-lg font-bold">{bookingData.slot ? formatSlotTime(bookingData.slot) : ''}</p>
-          
-          {bookingData && bookingData.slot && (
-            <p className="mt-2 font-medium">Amount: ₹{bookingData.slot.price}</p>
-          )}
-        </div>
-        
-        <Alert className="mb-6 text-left">
-          <AlertTitle>Next steps:</AlertTitle>
-          <AlertDescription>
-            <ul className="list-disc pl-5 space-y-1 mt-2">
-              <li>A confirmation has been sent to the admin via WhatsApp.</li>
-              <li>Your invoice has been downloaded automatically.</li>
-              <li>Please arrive 15 minutes before your slot time.</li>
-              <li>Payment to be made at the venue.</li>
-            </ul>
-          </AlertDescription>
-        </Alert>
-        
-        <p className="text-gray-500 mb-6">
-          For any queries, contact: {ADMIN_WHATSAPP_NUMBER}
-        </p>
-        
-        <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 justify-center">
-          <Button 
-            onClick={handleDownloadInvoice}
-            className="flex items-center justify-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Download Invoice Again
-          </Button>
-          
-          <Button 
-            onClick={() => {
-              setBookingSuccess(false);
-              setSelectedSlot(null);
-              setName('');
-              setMobileNumber('');
-              setPlayers(2);
-            }}
-            variant="outline"
-          >
-            Make Another Booking
-          </Button>
-        </div>
-      </div>
-    );
+    return <BookingSuccess bookingData={bookingData} onResetForm={resetForm} />;
   }
 
   // Show booking form if no successful booking yet
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-4">{translate('select_date')}</h3>
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={(newDate) => {
-              if (newDate) {
-                setDate(newDate);
-              }
-            }}
-            disabled={{ before: new Date() }}
-            className="rounded-md border shadow-sm p-3 pointer-events-auto"
-          />
-        </div>
+        <BookingCalendar 
+          date={date} 
+          onDateSelect={(newDate) => newDate && setDate(newDate)} 
+          translate={translate}
+        />
         
         <SlotMap 
           date={date}
@@ -275,83 +204,20 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         />
       </div>
       
-      {/* Booking form */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-xl font-semibold mb-4">{translate('booking_details')}</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">{translate('name')}</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={translate('name')}
-              />
-              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="mobileNumber">{translate('mobile_number')}</Label>
-              <Input
-                id="mobileNumber"
-                value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value)}
-                placeholder="10-digit mobile number"
-                type="tel"
-              />
-              {errors.mobileNumber && <p className="text-sm text-red-500">{errors.mobileNumber}</p>}
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="players">{translate('players')}</Label>
-            <Input
-              id="players"
-              value={players}
-              onChange={(e) => setPlayers(parseInt(e.target.value) || 0)}
-              type="number"
-              min={2}
-              max={16}
-            />
-            {errors.players && <p className="text-sm text-red-500">{errors.players}</p>}
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>{translate('date')}</Label>
-              <p className="p-2 border rounded-md bg-gray-50">{formatDate(date)}</p>
-            </div>
-            
-            <div className="space-y-2">
-              <Label>{translate('time')}</Label>
-              {selectedSlot ? (
-                <p className="p-2 border rounded-md bg-gray-50">
-                  {formatSlotTime(selectedSlot)} - {formatDate(date)}
-                </p>
-              ) : (
-                <p className="p-2 border rounded-md bg-gray-50 text-gray-400">
-                  {translate('select_date')}
-                </p>
-              )}
-              {errors.slot && <p className="text-sm text-red-500">{errors.slot}</p>}
-            </div>
-          </div>
-          
-          <div className="pt-4">
-            <p className="text-sm text-gray-600 mb-4">
-              {translate('payment_info')}
-            </p>
-            <Button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-white py-6"
-              disabled={submitLoading || isLoading}
-            >
-              {submitLoading || isLoading ? 'Loading...' : translate('confirm_booking')}
-            </Button>
-          </div>
-        </form>
-      </div>
+      <BookingDetails 
+        name={name}
+        setName={setName}
+        mobileNumber={mobileNumber}
+        setMobileNumber={setMobileNumber}
+        players={players}
+        setPlayers={setPlayers}
+        date={date}
+        selectedSlot={selectedSlot}
+        errors={errors}
+        isSubmitting={submitLoading || isLoading}
+        translate={translate}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 };

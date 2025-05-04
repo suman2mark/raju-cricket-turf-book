@@ -97,6 +97,10 @@ export function sendWhatsAppNotification(to: string, message: string): boolean {
     
     // Open in new tab for admin notifications
     window.open(whatsappUrl, '_blank');
+    
+    // Log for debugging
+    console.log('Opening WhatsApp with URL:', whatsappUrl);
+    
     return true;
   } catch (error) {
     console.error("Failed to send WhatsApp notification:", error);
