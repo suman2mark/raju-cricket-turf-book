@@ -179,7 +179,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     }
   };
 
-  if (bookingSuccess) {
+  // Show success screen if booking was successful
+  if (bookingSuccess && bookingData) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md text-center">
         <div className="mb-6">
@@ -242,6 +243,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     );
   }
 
+  // Show booking form if no successful booking yet
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -3,6 +3,7 @@ import { BookingFormData } from '@/types';
 import { formatDate, formatSlotTime } from './utils';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { format as dateFormat } from 'date-fns';
 
 // Extend the jsPDF type to include autoTable
 declare module 'jspdf' {
@@ -91,6 +92,6 @@ export function generateInvoicePDF(bookingData: BookingFormData): void {
   doc.text("Contact: 9701399366", 105, 286, { align: 'center' });
   
   // Save the PDF with a filename based on booking details
-  const fileName = `RajuSixerAdda_Booking_${format(bookingData.date, 'yyyyMMdd')}_${bookingData.slot.id}.pdf`;
+  const fileName = `RajuSixerAdda_Booking_${dateFormat(bookingData.date, 'yyyyMMdd')}_${bookingData.slot.id}.pdf`;
   doc.save(fileName);
 }
