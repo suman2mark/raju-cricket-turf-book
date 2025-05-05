@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
@@ -70,6 +69,14 @@ const DailyBookingDashboard: React.FC = () => {
     return `${startTime} - ${endTime}`;
   };
   
+  // New function to mask mobile numbers
+  const maskMobileNumber = (mobileNumber: string) => {
+    if (!mobileNumber) return '';
+    // Keep only the last 3 digits and mask the rest
+    const lastThreeDigits = mobileNumber.slice(-3);
+    return `*******${lastThreeDigits}`;
+  };
+  
   return (
     <section id="daily-bookings" className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -121,7 +128,7 @@ const DailyBookingDashboard: React.FC = () => {
                       <strong>Time:</strong> {formatTimeDisplay(booking.start_time, booking.end_time)}
                     </div>
                     <div className="text-sm text-gray-500">
-                      <strong>Contact:</strong> {booking.mobile_number}
+                      <strong>Contact:</strong> {maskMobileNumber(booking.mobile_number)}
                     </div>
                   </CardContent>
                 </Card>
@@ -156,7 +163,7 @@ const DailyBookingDashboard: React.FC = () => {
                           </span>
                         )}
                       </TableCell>
-                      <TableCell>{booking.mobile_number}</TableCell>
+                      <TableCell>{maskMobileNumber(booking.mobile_number)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
