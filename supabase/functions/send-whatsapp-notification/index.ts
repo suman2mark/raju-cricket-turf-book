@@ -6,7 +6,7 @@ const SUPABASE_URL = "https://hxmgfhinrmdxgyhggtlv.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4bWdmaGlucm1keGd5aGdndGx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxNzA2ODksImV4cCI6MjA2MTc0NjY4OX0.RBhItW0FNqBAcgTCMPPl7DgoNvUKIgCew0KXKpmIx0s";
 const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID");
 const TWILIO_AUTH_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN");
-const TWILIO_FROM_NUMBER = "whatsapp:+918919878315";
+const TWILIO_FROM_NUMBER = "whatsapp:+918919878315"; // Corrected format
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -37,7 +37,17 @@ const formatPhoneNumber = (phoneNumber: string): string => {
   }
   
   // If already has country code
-  return `whatsapp:+${cleaned}`;
+  if (cleaned.startsWith("91") && cleaned.length === 12) {
+    return `whatsapp:+${cleaned}`;
+  }
+  
+  // If number already includes +, strip it and add whatsapp: prefix
+  if (cleaned.length > 10) {
+    return `whatsapp:+${cleaned}`;
+  }
+  
+  console.log("Formatted phone number:", `whatsapp:+91${cleaned}`);
+  return `whatsapp:+91${cleaned}`; // Default to India code
 };
 
 const getMessageContent = (
@@ -58,8 +68,14 @@ const sendWhatsAppMessage = async (
   body: string
 ): Promise<Response> => {
   if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
+    console.error("Missing Twilio credentials");
     throw new Error("Twilio credentials not configured");
   }
+  
+  console.log("Sending WhatsApp message to:", to);
+  console.log("Message body:", body);
+  console.log("Using Twilio Account SID:", TWILIO_ACCOUNT_SID);
+  console.log("Using Twilio from number:", TWILIO_FROM_NUMBER);
   
   const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
   
@@ -71,6 +87,13 @@ const sendWhatsAppMessage = async (
   const auth = btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`);
   
   try {
+    console.log("Making Twilio API request to:", twilioUrl);
+    console.log("Request headers:", { 
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": `Basic ${auth}` 
+    });
+    console.log("Request body:", formData.toString());
+    
     const twilioResponse = await fetch(twilioUrl, {
       method: "POST",
       headers: {
@@ -81,6 +104,7 @@ const sendWhatsAppMessage = async (
     });
     
     const twilioData = await twilioResponse.json();
+    console.log("Twilio API response status:", twilioResponse.status);
     console.log("Twilio API response:", twilioData);
     
     if (twilioResponse.ok) {
@@ -92,6 +116,7 @@ const sendWhatsAppMessage = async (
         }
       );
     } else {
+      console.error("Twilio error:", twilioData);
       throw new Error(`Twilio error: ${JSON.stringify(twilioData)}`);
     }
   } catch (error) {
@@ -117,7 +142,9 @@ const checkAndSendReminders = async (): Promise<void> => {
       return;
     }
     
-    for (const booking of bookings) {
+    console.log(`Checking ${bookings?.length || 0} bookings for reminders`);
+    
+    for (const booking of bookings || []) {
       try {
         // Convert booking time to Date object for comparison
         const [hours, minutes] = booking.start_time.split(":");
@@ -126,6 +153,8 @@ const checkAndSendReminders = async (): Promise<void> => {
         
         // Calculate time difference in minutes
         const timeDiff = (bookingTime.getTime() - currentTime.getTime()) / (1000 * 60);
+        
+        console.log(`Booking ${booking.id} - Slot time: ${booking.start_time}, Time difference: ${timeDiff} minutes`);
         
         // If booking is 45-75 minutes from now, send reminder
         if (timeDiff >= 45 && timeDiff <= 75) {
@@ -136,6 +165,8 @@ const checkAndSendReminders = async (): Promise<void> => {
             `${booking.start_time} - ${booking.end_time}`, 
             booking.booking_date
           );
+          
+          console.log(`Sending reminder for booking ${booking.id} to ${toNumber}`);
           
           await sendWhatsAppMessage(toNumber, messageContent);
           console.log(`Reminder sent for booking ${booking.id}`);
@@ -157,7 +188,9 @@ serve(async (req) => {
   
   try {
     // Special case for scheduled invocation (for reminders)
-    if (req.headers.get("x-function-source") === "scheduled") {
+    const source = req.headers.get("x-function-source");
+    if (source === "scheduled") {
+      console.log("Processing scheduled reminders");
       await checkAndSendReminders();
       return new Response(
         JSON.stringify({ message: "Reminders processed successfully" }),
@@ -166,9 +199,13 @@ serve(async (req) => {
     }
     
     // Handle normal message sending requests
-    const { name, phoneNumber, slotTime, bookingDate, type }: WhatsAppRequest = await req.json();
+    const requestData = await req.json();
+    console.log("Received request data:", requestData);
+    
+    const { name, phoneNumber, slotTime, bookingDate, type } = requestData;
     
     if (!name || !phoneNumber || !slotTime || !bookingDate || !type) {
+      console.error("Missing required parameters", requestData);
       return new Response(
         JSON.stringify({ error: "Missing required parameters" }),
         { 
@@ -180,6 +217,8 @@ serve(async (req) => {
     
     const toNumber = formatPhoneNumber(phoneNumber);
     const messageContent = getMessageContent(type, name, slotTime, bookingDate);
+    
+    console.log(`Sending ${type} message to ${toNumber} for ${name}`);
     
     return await sendWhatsAppMessage(toNumber, messageContent);
   } catch (error) {

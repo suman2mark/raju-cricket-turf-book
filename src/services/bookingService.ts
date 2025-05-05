@@ -40,6 +40,14 @@ export async function sendWhatsAppNotification(
     const formattedDate = format(bookingData.date, 'yyyy-MM-dd');
     const slotTime = `${bookingData.slot.startTime} - ${bookingData.slot.endTime}`;
 
+    // Format the phone number to ensure international format
+    const formattedPhoneNumber = formatWhatsAppNumber(bookingData.mobileNumber);
+    
+    console.log("Sending WhatsApp notification to:", formattedPhoneNumber);
+    console.log("Notification type:", type);
+    console.log("Slot time:", slotTime);
+    console.log("Booking date:", formattedDate);
+
     const response = await fetch(
       'https://hxmgfhinrmdxgyhggtlv.supabase.co/functions/v1/send-whatsapp-notification',
       {
@@ -47,7 +55,7 @@ export async function sendWhatsAppNotification(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: bookingData.name,
-          phoneNumber: bookingData.mobileNumber,
+          phoneNumber: formattedPhoneNumber,
           slotTime: slotTime,
           bookingDate: formattedDate,
           type: type
@@ -55,14 +63,24 @@ export async function sendWhatsAppNotification(
       }
     );
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('WhatsApp notification failed:', errorData);
+    const responseText = await response.text();
+    console.log("WhatsApp notification raw response:", responseText);
+    
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      console.error("Failed to parse response JSON:", e);
+      console.log("Raw response was:", responseText);
       return false;
     }
 
-    const result = await response.json();
-    console.log('WhatsApp notification sent:', result);
+    if (!response.ok) {
+      console.error('WhatsApp notification failed:', result);
+      return false;
+    }
+
+    console.log('WhatsApp notification sent successfully:', result);
     return true;
   } catch (error) {
     console.error("Failed to send WhatsApp notification:", error);
@@ -111,7 +129,13 @@ export async function createBooking(bookingData: BookingFormData): Promise<{ id:
 
     // Send WhatsApp confirmation after successful booking
     try {
-      await sendWhatsAppNotification(bookingData, 'confirmation');
+      console.log("Attempting to send WhatsApp confirmation for booking:", data.id);
+      const notificationSent = await sendWhatsAppNotification(bookingData, 'confirmation');
+      if (notificationSent) {
+        console.log("WhatsApp confirmation sent successfully");
+      } else {
+        console.error("WhatsApp notification failed to send");
+      }
     } catch (whatsAppError) {
       console.error('WhatsApp notification error:', whatsAppError);
       // Don't fail the booking if the notification fails
@@ -156,5 +180,11 @@ export function formatWhatsAppNumber(number: string): string {
     return `91${cleanNumber}`;
   }
   
+  // If the number already has a country code (91), return it as-is
+  if (cleanNumber.startsWith('91') && cleanNumber.length === 12) {
+    return cleanNumber;
+  }
+  
+  // For any other case, just return the cleaned number
   return cleanNumber;
 }
