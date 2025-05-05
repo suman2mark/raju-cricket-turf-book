@@ -26,6 +26,50 @@ export async function isSlotBooked(slotId: string, bookingDate: Date): Promise<b
   }
 }
 
+// Send WhatsApp notification using the Supabase Edge Function
+export async function sendWhatsAppNotification(
+  bookingData: BookingFormData, 
+  type: 'confirmation' | 'reminder'
+): Promise<boolean> {
+  try {
+    if (!bookingData.slot) {
+      console.error("Cannot send WhatsApp notification: Missing slot data");
+      return false;
+    }
+
+    const formattedDate = format(bookingData.date, 'yyyy-MM-dd');
+    const slotTime = `${bookingData.slot.startTime} - ${bookingData.slot.endTime}`;
+
+    const response = await fetch(
+      'https://hxmgfhinrmdxgyhggtlv.supabase.co/functions/v1/send-whatsapp-notification',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: bookingData.name,
+          phoneNumber: bookingData.mobileNumber,
+          slotTime: slotTime,
+          bookingDate: formattedDate,
+          type: type
+        })
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('WhatsApp notification failed:', errorData);
+      return false;
+    }
+
+    const result = await response.json();
+    console.log('WhatsApp notification sent:', result);
+    return true;
+  } catch (error) {
+    console.error("Failed to send WhatsApp notification:", error);
+    return false;
+  }
+}
+
 // Create a new booking
 export async function createBooking(bookingData: BookingFormData): Promise<{ id: string }> {
   try {
@@ -63,6 +107,14 @@ export async function createBooking(bookingData: BookingFormData): Promise<{ id:
     
     if (!data) {
       throw new Error('Failed to create booking: No data returned');
+    }
+
+    // Send WhatsApp confirmation after successful booking
+    try {
+      await sendWhatsAppNotification(bookingData, 'confirmation');
+    } catch (whatsAppError) {
+      console.error('WhatsApp notification error:', whatsAppError);
+      // Don't fail the booking if the notification fails
     }
     
     return data;
@@ -105,24 +157,4 @@ export function formatWhatsAppNumber(number: string): string {
   }
   
   return cleanNumber;
-}
-
-// Send WhatsApp notification directly with proper formatting
-export function sendWhatsAppNotification(to: string, message: string): boolean {
-  try {
-    const formattedNumber = formatWhatsAppNumber(to);
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedNumber}&text=${encodedMessage}`;
-    
-    // Open in new tab for admin notifications
-    window.open(whatsappUrl, '_blank');
-    
-    // Log for debugging
-    console.log('Opening WhatsApp with URL:', whatsappUrl);
-    
-    return true;
-  } catch (error) {
-    console.error("Failed to send WhatsApp notification:", error);
-    return false;
-  }
 }

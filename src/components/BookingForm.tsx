@@ -8,8 +8,7 @@ import { toast } from '@/components/ui/sonner';
 import SlotMap from './SlotMap';
 import { 
   createBooking, 
-  isSlotBooked, 
-  sendWhatsAppNotification
+  isSlotBooked
 } from '@/services/bookingService';
 import { generateInvoicePDF } from '@/lib/invoiceGenerator';
 import { BookingCalendar, BookingDetails, BookingSuccess } from './booking';
@@ -81,23 +80,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     }
   };
 
-  const getConfirmationMessage = (formData: BookingFormData): string => {
-    if (!formData.slot) return '';
-    
-    const { name, date, slot } = formData;
-    const formattedDate = formatDate(date);
-    const formattedSlot = formatSlotTime(slot);
-
-    return `*Booking Confirmation - Raju Sixer Adda*\n\n` +
-      `Hello ${name},\n\n` +
-      `Your booking has been confirmed!\n\n` +
-      `*Date:* ${formattedDate}\n` +
-      `*Time:* ${formattedSlot}\n` +
-      `*Price:* ₹${slot.price}\n\n` +
-      `Thank you for choosing Raju Sixer Adda!\n` +
-      `For any queries, please contact: ${ADMIN_WHATSAPP_NUMBER}`;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -121,14 +103,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         // Store booking data for success screen
         setBookingData(formData);
         
-        // Send WhatsApp message to admin
-        try {
-          const adminMessageText = getConfirmationMessage(formData);
-          sendWhatsAppNotification(ADMIN_WHATSAPP_NUMBER, adminMessageText);
-        } catch (whatsappError) {
-          console.error("Error sending WhatsApp notification:", whatsappError);
-        }
-        
         try {
           // Generate and download PDF invoice
           generateInvoicePDF(formData);
@@ -139,9 +113,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         // Call the original onSubmit if needed
         onSubmit(formData);
         
-        // Show success message
+        // Show success message with WhatsApp notification info
         toast.success('Booking Successful!', {
-          description: `Your slot has been booked for ${formatDate(date)}`,
+          description: `Your slot has been booked for ${formatDate(date)}. A confirmation has been sent to your WhatsApp.`,
           duration: 5000,
         });
         
