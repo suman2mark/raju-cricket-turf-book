@@ -8,7 +8,7 @@ const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID") || "AC811940af25f5
 const TWILIO_AUTH_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN") || "3f1ff9e7aa6df954fbc7c7bd0eb016cf";
 const TWILIO_FROM_NUMBER = "whatsapp:+918919878315"; // For WhatsApp messages
 const ADMIN_PHONE_NUMBER = "+918919878315"; // Admin's phone number
-const TWILIO_MESSAGING_SERVICE_SID = "MG6de63204cfb2a559380642949d468a65"; // For SMS messages
+const TWILIO_SMS_FROM_NUMBER = "+15084747449"; // Direct Twilio number for SMS
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -161,7 +161,7 @@ const sendWhatsAppMessage = async (
   }
 };
 
-// Send SMS message using Twilio with the specific MessagingServiceSid
+// Send SMS message using Twilio with the direct From number
 const sendSMSMessage = async (
   to: string,
   body: string
@@ -174,14 +174,14 @@ const sendSMSMessage = async (
   console.log(`Sending SMS message to:`, to);
   console.log("SMS message body:", body);
   console.log("Using Twilio Account SID:", TWILIO_ACCOUNT_SID);
-  console.log("Using Twilio Messaging Service SID:", TWILIO_MESSAGING_SERVICE_SID);
+  console.log("Using Twilio From number for SMS:", TWILIO_SMS_FROM_NUMBER);
   
   const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
   
   const formData = new URLSearchParams();
   formData.append("To", formatRegularPhoneNumber(to));
-  // Use MessagingServiceSid instead of From parameter
-  formData.append("MessagingServiceSid", TWILIO_MESSAGING_SERVICE_SID);
+  // Use direct From number instead of MessagingServiceSid
+  formData.append("From", TWILIO_SMS_FROM_NUMBER);
   formData.append("Body", body);
   
   const auth = btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`);
@@ -326,7 +326,7 @@ serve(async (req) => {
     // If this is a booking confirmation, also notify the admin via SMS
     if (type === "confirmation") {
       try {
-        console.log("Sending admin notification via SMS");
+        console.log("Sending admin notification via direct SMS");
         const adminMessageContent = `Hello Admin!
 
 A new slot has been successfully booked.
@@ -342,7 +342,7 @@ Please check your dashboard for details.
 Thank you!`;
 
         await sendSMSMessage(ADMIN_PHONE_NUMBER, adminMessageContent);
-        console.log("Admin notification sent successfully via SMS");
+        console.log("Admin notification sent successfully via direct SMS");
       } catch (adminError) {
         console.error("Failed to send admin notification:", adminError);
         // Don't fail the overall process if admin notification fails
