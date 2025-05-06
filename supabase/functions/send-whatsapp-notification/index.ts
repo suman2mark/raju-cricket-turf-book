@@ -180,6 +180,7 @@ const sendSMSMessage = async (
   
   const formData = new URLSearchParams();
   formData.append("To", formatRegularPhoneNumber(to));
+  // Use MessagingServiceSid instead of From parameter
   formData.append("MessagingServiceSid", TWILIO_MESSAGING_SERVICE_SID);
   formData.append("Body", body);
   
@@ -325,8 +326,8 @@ serve(async (req) => {
     // If this is a booking confirmation, also notify the admin via SMS
     if (type === "confirmation") {
       try {
-        console.log("Sending admin notification");
-        const adminMessageContent = `Hello!
+        console.log("Sending admin notification via SMS");
+        const adminMessageContent = `Hello Admin!
 
 A new slot has been successfully booked.
 
@@ -341,7 +342,7 @@ Please check your dashboard for details.
 Thank you!`;
 
         await sendSMSMessage(ADMIN_PHONE_NUMBER, adminMessageContent);
-        console.log("Admin notification sent successfully");
+        console.log("Admin notification sent successfully via SMS");
       } catch (adminError) {
         console.error("Failed to send admin notification:", adminError);
         // Don't fail the overall process if admin notification fails
