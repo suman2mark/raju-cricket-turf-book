@@ -47,6 +47,7 @@ export async function sendWhatsAppNotification(
     console.log("Notification type:", type);
     console.log("Slot time:", slotTime);
     console.log("Booking date:", formattedDate);
+    console.log("Player count:", bookingData.players);
 
     const response = await fetch(
       'https://hxmgfhinrmdxgyhggtlv.supabase.co/functions/v1/send-whatsapp-notification',
@@ -58,6 +59,7 @@ export async function sendWhatsAppNotification(
           phoneNumber: formattedPhoneNumber,
           slotTime: slotTime,
           bookingDate: formattedDate,
+          players: bookingData.players,
           type: type
         })
       }

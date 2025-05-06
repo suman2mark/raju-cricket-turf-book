@@ -7,6 +7,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID");
 const TWILIO_AUTH_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN");
 const TWILIO_FROM_NUMBER = "whatsapp:+918919878315"; // Corrected format
+const ADMIN_PHONE_NUMBER = "+918919878315"; // Admin's phone number
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -16,7 +17,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-type MessageType = "confirmation" | "reminder";
+type MessageType = "confirmation" | "reminder" | "admin-notification";
 
 interface WhatsAppRequest {
   bookingId?: string;
@@ -25,6 +26,7 @@ interface WhatsAppRequest {
   slotTime: string;
   bookingDate: string;
   type: MessageType;
+  players?: number;
 }
 
 const formatPhoneNumber = (phoneNumber: string): string => {
@@ -50,29 +52,62 @@ const formatPhoneNumber = (phoneNumber: string): string => {
   return `whatsapp:+91${cleaned}`; // Default to India code
 };
 
+// Format a regular phone number (not for WhatsApp)
+const formatRegularPhoneNumber = (phoneNumber: string): string => {
+  // Remove any non-numeric characters
+  const cleaned = phoneNumber.replace(/\D/g, "");
+  
+  // Ensure number has country code (+91 for India)
+  if (cleaned.length === 10) {
+    return `+91${cleaned}`;
+  }
+  
+  // If already has country code
+  if (cleaned.startsWith("91") && cleaned.length === 12) {
+    return `+${cleaned}`;
+  }
+  
+  // Return with + prefix
+  return `+${cleaned}`;
+};
+
 const getMessageContent = (
   type: MessageType,
   name: string,
   slotTime: string,
-  bookingDate: string
+  bookingDate: string,
+  players?: number
 ): string => {
   if (type === "confirmation") {
-    return `Hi ${name}, your cricket slot at ${slotTime} on ${bookingDate} is confirmed. See you at the pitch!`;
-  } else {
+    return `Hi ${name}, your cricket slot at ${slotTime} on ${bookingDate} is confirmed. Admin has been notified of your booking. See you at the pitch!`;
+  } else if (type === "reminder") {
     return `Reminder: Your box cricket slot is today at ${slotTime}. Get ready to play!`;
+  } else if (type === "admin-notification") {
+    return `NEW BOOKING ALERT!
+    
+Name: ${name}
+Date: ${bookingDate}
+Time: ${slotTime}
+Players: ${players || 'Not specified'}
+Contact: ${formatRegularPhoneNumber(name)}
+
+Please prepare the pitch accordingly.`;
+  } else {
+    return `Hi ${name}, your cricket slot information: ${slotTime} on ${bookingDate}`;
   }
 };
 
-const sendWhatsAppMessage = async (
+const sendTwilioMessage = async (
   to: string,
-  body: string
+  body: string,
+  isWhatsApp: boolean = true
 ): Promise<Response> => {
   if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
     console.error("Missing Twilio credentials");
     throw new Error("Twilio credentials not configured");
   }
   
-  console.log("Sending WhatsApp message to:", to);
+  console.log(`Sending ${isWhatsApp ? 'WhatsApp' : 'SMS'} message to:`, to);
   console.log("Message body:", body);
   console.log("Using Twilio Account SID:", TWILIO_ACCOUNT_SID);
   console.log("Using Twilio from number:", TWILIO_FROM_NUMBER);
@@ -80,8 +115,15 @@ const sendWhatsAppMessage = async (
   const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
   
   const formData = new URLSearchParams();
-  formData.append("To", to);
-  formData.append("From", TWILIO_FROM_NUMBER);
+  formData.append("To", isWhatsApp ? to : formatRegularPhoneNumber(to.replace('whatsapp:', '')));
+  
+  if (isWhatsApp) {
+    formData.append("From", TWILIO_FROM_NUMBER);
+  } else {
+    // For regular SMS
+    formData.append("MessagingServiceSid", "MG6de63204cfb2a559380642949d468a65");
+  }
+  
   formData.append("Body", body);
   
   const auth = btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`);
@@ -120,9 +162,25 @@ const sendWhatsAppMessage = async (
       throw new Error(`Twilio error: ${JSON.stringify(twilioData)}`);
     }
   } catch (error) {
-    console.error("Failed to send WhatsApp message:", error);
+    console.error(`Failed to send ${isWhatsApp ? 'WhatsApp' : 'SMS'} message:`, error);
     throw error;
   }
+};
+
+// Send WhatsApp message using Twilio
+const sendWhatsAppMessage = async (
+  to: string,
+  body: string
+): Promise<Response> => {
+  return sendTwilioMessage(to, body, true);
+};
+
+// Send SMS message using Twilio
+const sendSMSMessage = async (
+  to: string,
+  body: string
+): Promise<Response> => {
+  return sendTwilioMessage(to, body, false);
 };
 
 // Check for upcoming bookings that need reminders
@@ -202,7 +260,7 @@ serve(async (req) => {
     const requestData = await req.json();
     console.log("Received request data:", requestData);
     
-    const { name, phoneNumber, slotTime, bookingDate, type } = requestData;
+    const { name, phoneNumber, slotTime, bookingDate, type, players } = requestData;
     
     if (!name || !phoneNumber || !slotTime || !bookingDate || !type) {
       console.error("Missing required parameters", requestData);
@@ -216,11 +274,27 @@ serve(async (req) => {
     }
     
     const toNumber = formatPhoneNumber(phoneNumber);
-    const messageContent = getMessageContent(type, name, slotTime, bookingDate);
+    const messageContent = getMessageContent(type, name, slotTime, bookingDate, players);
     
     console.log(`Sending ${type} message to ${toNumber} for ${name}`);
     
-    return await sendWhatsAppMessage(toNumber, messageContent);
+    // Send notification to the user
+    const userResponse = await sendWhatsAppMessage(toNumber, messageContent);
+    
+    // If this is a booking confirmation, also notify the admin via SMS
+    if (type === "confirmation") {
+      try {
+        console.log("Sending admin notification");
+        const adminMessageContent = getMessageContent("admin-notification", name, slotTime, bookingDate, players);
+        await sendSMSMessage(ADMIN_PHONE_NUMBER, adminMessageContent);
+        console.log("Admin notification sent successfully");
+      } catch (adminError) {
+        console.error("Failed to send admin notification:", adminError);
+        // Don't fail the overall process if admin notification fails
+      }
+    }
+    
+    return userResponse;
   } catch (error) {
     console.error("Error in WhatsApp notification function:", error);
     return new Response(
