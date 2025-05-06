@@ -4,10 +4,11 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 
 const SUPABASE_URL = "https://hxmgfhinrmdxgyhggtlv.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4bWdmaGlucm1keGd5aGdndGx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxNzA2ODksImV4cCI6MjA2MTc0NjY4OX0.RBhItW0FNqBAcgTCMPPl7DgoNvUKIgCew0KXKpmIx0s";
-const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID");
-const TWILIO_AUTH_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN");
-const TWILIO_FROM_NUMBER = "whatsapp:+918919878315"; // Corrected format
+const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID") || "AC811940af25f55ffe7b02540bde704353";
+const TWILIO_AUTH_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN") || "3f1ff9e7aa6df954fbc7c7bd0eb016cf";
+const TWILIO_FROM_NUMBER = "whatsapp:+918919878315"; // For WhatsApp messages
 const ADMIN_PHONE_NUMBER = "+918919878315"; // Admin's phone number
+const TWILIO_MESSAGING_SERVICE_SID = "MG6de63204cfb2a559380642949d468a65"; // For SMS messages
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -97,17 +98,17 @@ Please prepare the pitch accordingly.`;
   }
 };
 
-const sendTwilioMessage = async (
+// Send WhatsApp message using Twilio
+const sendWhatsAppMessage = async (
   to: string,
-  body: string,
-  isWhatsApp: boolean = true
+  body: string
 ): Promise<Response> => {
   if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
     console.error("Missing Twilio credentials");
     throw new Error("Twilio credentials not configured");
   }
   
-  console.log(`Sending ${isWhatsApp ? 'WhatsApp' : 'SMS'} message to:`, to);
+  console.log(`Sending WhatsApp message to:`, to);
   console.log("Message body:", body);
   console.log("Using Twilio Account SID:", TWILIO_ACCOUNT_SID);
   console.log("Using Twilio from number:", TWILIO_FROM_NUMBER);
@@ -115,15 +116,8 @@ const sendTwilioMessage = async (
   const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
   
   const formData = new URLSearchParams();
-  formData.append("To", isWhatsApp ? to : formatRegularPhoneNumber(to.replace('whatsapp:', '')));
-  
-  if (isWhatsApp) {
-    formData.append("From", TWILIO_FROM_NUMBER);
-  } else {
-    // For regular SMS
-    formData.append("MessagingServiceSid", "MG6de63204cfb2a559380642949d468a65");
-  }
-  
+  formData.append("To", to);
+  formData.append("From", TWILIO_FROM_NUMBER);
   formData.append("Body", body);
   
   const auth = btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`);
@@ -162,25 +156,72 @@ const sendTwilioMessage = async (
       throw new Error(`Twilio error: ${JSON.stringify(twilioData)}`);
     }
   } catch (error) {
-    console.error(`Failed to send ${isWhatsApp ? 'WhatsApp' : 'SMS'} message:`, error);
+    console.error(`Failed to send WhatsApp message:`, error);
     throw error;
   }
 };
 
-// Send WhatsApp message using Twilio
-const sendWhatsAppMessage = async (
-  to: string,
-  body: string
-): Promise<Response> => {
-  return sendTwilioMessage(to, body, true);
-};
-
-// Send SMS message using Twilio
+// Send SMS message using Twilio with the specific MessagingServiceSid
 const sendSMSMessage = async (
   to: string,
   body: string
 ): Promise<Response> => {
-  return sendTwilioMessage(to, body, false);
+  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
+    console.error("Missing Twilio credentials for SMS");
+    throw new Error("Twilio credentials not configured");
+  }
+  
+  console.log(`Sending SMS message to:`, to);
+  console.log("SMS message body:", body);
+  console.log("Using Twilio Account SID:", TWILIO_ACCOUNT_SID);
+  console.log("Using Twilio Messaging Service SID:", TWILIO_MESSAGING_SERVICE_SID);
+  
+  const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
+  
+  const formData = new URLSearchParams();
+  formData.append("To", formatRegularPhoneNumber(to));
+  formData.append("MessagingServiceSid", TWILIO_MESSAGING_SERVICE_SID);
+  formData.append("Body", body);
+  
+  const auth = btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`);
+  
+  try {
+    console.log("Making Twilio SMS API request to:", twilioUrl);
+    console.log("SMS Request headers:", { 
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": `Basic ${auth}` 
+    });
+    console.log("SMS Request body:", formData.toString());
+    
+    const twilioResponse = await fetch(twilioUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `Basic ${auth}`,
+      },
+      body: formData,
+    });
+    
+    const twilioData = await twilioResponse.json();
+    console.log("Twilio SMS API response status:", twilioResponse.status);
+    console.log("Twilio SMS API response:", twilioData);
+    
+    if (twilioResponse.ok) {
+      return new Response(
+        JSON.stringify({ success: true, messageId: twilioData.sid }),
+        { 
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        }
+      );
+    } else {
+      console.error("Twilio SMS error:", twilioData);
+      throw new Error(`Twilio SMS error: ${JSON.stringify(twilioData)}`);
+    }
+  } catch (error) {
+    console.error(`Failed to send SMS message:`, error);
+    throw error;
+  }
 };
 
 // Check for upcoming bookings that need reminders
@@ -285,7 +326,20 @@ serve(async (req) => {
     if (type === "confirmation") {
       try {
         console.log("Sending admin notification");
-        const adminMessageContent = getMessageContent("admin-notification", name, slotTime, bookingDate, players);
+        const adminMessageContent = `Hello!
+
+A new slot has been successfully booked.
+
+Name: ${name}
+Date: ${bookingDate}
+Time: ${slotTime}
+Players: ${players || 'Not specified'}
+Contact: ${formatRegularPhoneNumber(phoneNumber)}
+
+Please check your dashboard for details.
+
+Thank you!`;
+
         await sendSMSMessage(ADMIN_PHONE_NUMBER, adminMessageContent);
         console.log("Admin notification sent successfully");
       } catch (adminError) {

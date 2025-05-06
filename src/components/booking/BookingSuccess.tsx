@@ -57,7 +57,7 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({
         <AlertDescription>
           <ul className="list-disc pl-5 space-y-1 mt-2">
             <li>A confirmation has been sent to your WhatsApp.</li>
-            <li>The admin has been notified of your booking.</li>
+            <li>The admin has been notified of your booking via SMS.</li>
             <li>You'll receive a reminder 1 hour before your slot time.</li>
             <li>Your invoice has been downloaded automatically.</li>
             <li>Please arrive 15 minutes before your slot time.</li>
