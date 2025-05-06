@@ -6,7 +6,8 @@ const SUPABASE_URL = "https://hxmgfhinrmdxgyhggtlv.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4bWdmaGlucm1keGd5aGdndGx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxNzA2ODksImV4cCI6MjA2MTc0NjY4OX0.RBhItW0FNqBAcgTCMPPl7DgoNvUKIgCew0KXKpmIx0s";
 const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID") || "AC811940af25f55ffe7b02540bde704353";
 const TWILIO_AUTH_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN") || "3f1ff9e7aa6df954fbc7c7bd0eb016cf";
-const TWILIO_FROM_NUMBER = "whatsapp:+918919878315"; // For WhatsApp messages
+const TWILIO_FROM_NUMBER = "whatsapp:+15084747449"; // For WhatsApp messages
+// const TWILIO_FROM_NUMBER = "whatsapp:+918919878315"; // For WhatsApp messages
 const ADMIN_PHONE_NUMBER = "+918919878315"; // Admin's phone number
 const TWILIO_SMS_FROM_NUMBER = "+15084747449"; // Direct Twilio number for SMS
 
