@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { BookingFormData, SlotTime } from '@/types';
 import { format } from 'date-fns';

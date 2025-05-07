@@ -8,7 +8,7 @@ const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID") || "AC811940af25f5
 const TWILIO_AUTH_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN") || "3f1ff9e7aa6df954fbc7c7bd0eb016cf";
 const TWILIO_MESSAGING_SERVICE_SID = "MG6de63204cfb2a559380642949d468a65";
 const TWILIO_FROM_NUMBER = "+15084747449"; // Direct Twilio number for SMS
-const ADMIN_PHONE_NUMBER = "+918919878315"; // Admin's phone number
+const ADMIN_PHONE_NUMBER = "+918919878315"; // Admin's phone number with country code
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -31,7 +31,7 @@ interface NotificationRequest {
 }
 
 // Format a regular phone number for SMS
-const formatRegularPhoneNumber = (phoneNumber: string): string => {
+const formatPhoneNumber = (phoneNumber: string): string => {
   // Remove any non-numeric characters
   const cleaned = phoneNumber.replace(/\D/g, "");
   
@@ -45,8 +45,8 @@ const formatRegularPhoneNumber = (phoneNumber: string): string => {
     return `+${cleaned}`;
   }
   
-  // Return with + prefix
-  return `+${cleaned}`;
+  // Return with + prefix if not already there
+  return cleaned.startsWith("+") ? cleaned : `+${cleaned}`;
 };
 
 const getMessageContent = (
@@ -67,7 +67,7 @@ Name: ${name}
 Date: ${bookingDate}
 Time: ${slotTime}
 Players: ${players || 'Not specified'}
-Contact: ${formatRegularPhoneNumber(phoneNumber)}
+Contact: ${name}'s contact
 
 Please prepare the pitch accordingly.`;
   } else {
@@ -85,16 +85,19 @@ const sendSMSMessage = async (
     throw new Error("Twilio credentials not configured");
   }
   
-  console.log(`Sending SMS message to:`, to);
+  // Ensure the number is properly formatted
+  const formattedNumber = formatPhoneNumber(to);
+  
+  console.log(`Sending SMS message to:`, formattedNumber);
   console.log("SMS message body:", body);
   
   const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
   
   const formData = new URLSearchParams();
-  formData.append("To", formatRegularPhoneNumber(to));
+  formData.append("To", formattedNumber);
   
   // Use MessagingServiceSid for customer confirmations
-  if (to === ADMIN_PHONE_NUMBER) {
+  if (to === ADMIN_PHONE_NUMBER || formattedNumber === ADMIN_PHONE_NUMBER) {
     // For admin notifications, use direct From number
     formData.append("From", TWILIO_FROM_NUMBER);
   } else {
@@ -181,7 +184,7 @@ serve(async (req) => {
       for (const booking of bookings || []) {
         try {
           const messageContent = `Reminder: Your box cricket slot is today at ${booking.start_time} - ${booking.end_time}. Get ready to play!`;
-          const toNumber = formatRegularPhoneNumber(booking.mobile_number);
+          const toNumber = formatPhoneNumber(booking.mobile_number);
           
           await sendSMSMessage(toNumber, messageContent);
           console.log(`Reminder sent for booking ${booking.id}`);
@@ -239,6 +242,9 @@ serve(async (req) => {
           console.error("Error fetching booking details for admin notification:", bookingError);
         }
         
+        // Log the retrieved booking details for debugging
+        console.log("Fetched booking details for admin notification:", bookingDetails);
+        
         const booking = bookingDetails && bookingDetails.length > 0 ? bookingDetails[0] : null;
         const contactNumber = booking ? booking.mobile_number : phoneNumber;
         const actualPlayers = booking ? booking.players : players || 'Not specified';
@@ -252,12 +258,21 @@ Date: ${bookingDate}
 Time: ${slotTime}
 Players: ${actualPlayers}
 Price: ${finalPrice} ${discountCode}
-Contact: ${formatRegularPhoneNumber(contactNumber)}
+Contact: ${formatPhoneNumber(contactNumber)}
 
 Please prepare the pitch accordingly.`;
 
-        await sendSMSMessage(ADMIN_PHONE_NUMBER, adminMessageContent);
+        // Log admin message content and number for debugging
+        console.log("Admin message content:", adminMessageContent);
+        console.log("Admin phone number:", ADMIN_PHONE_NUMBER);
+        
+        // Make sure admin number is consistently formatted
+        const adminResult = await sendSMSMessage(ADMIN_PHONE_NUMBER, adminMessageContent);
         console.log("Admin notification sent successfully via SMS");
+        
+        // Return success even if admin notification fails
+        // But still log the success or failure
+        console.log("Admin notification result:", adminResult);
       } catch (adminError) {
         console.error("Failed to send admin notification:", adminError);
         // Don't fail the overall process if admin notification fails
