@@ -13,7 +13,9 @@ export type Database = {
         Row: {
           booking_date: string
           created_at: string
+          discount_code: string | null
           end_time: string
+          final_price: number | null
           id: string
           is_night_session: boolean
           mobile_number: string
@@ -25,7 +27,9 @@ export type Database = {
         Insert: {
           booking_date: string
           created_at?: string
+          discount_code?: string | null
           end_time: string
+          final_price?: number | null
           id?: string
           is_night_session: boolean
           mobile_number: string
@@ -37,7 +41,9 @@ export type Database = {
         Update: {
           booking_date?: string
           created_at?: string
+          discount_code?: string | null
           end_time?: string
+          final_price?: number | null
           id?: string
           is_night_session?: boolean
           mobile_number?: string

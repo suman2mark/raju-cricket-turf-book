@@ -121,12 +121,15 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
                   {translate('time')}: {formatSlotTime(selectedSlot)}
                 </p>
                 <p className="mt-1">
-                  {translate('price')}: ₹{selectedSlot.price}
-                  {isFirstBooking && couponCode === 'WELCOME10' && (
+                  {translate('price')}: 
+                  {isFirstBooking && couponCode === 'WELCOME10' ? (
                     <>
                       <span className="line-through ml-1">₹{selectedSlot.price}</span>
                       <span className="text-green-600 font-medium ml-1">₹{selectedSlot.price * 0.9}</span>
+                      <span className="ml-1 text-xs text-green-600">(10% off)</span>
                     </>
+                  ) : (
+                    <span className="ml-1">₹{selectedSlot.price}</span>
                   )}
                 </p>
               </>

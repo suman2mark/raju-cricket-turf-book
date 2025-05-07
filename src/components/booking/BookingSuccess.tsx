@@ -29,6 +29,17 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({
     }
   }, [bookingData]);
 
+  // Calculate the final price with discount if applicable
+  const calculateFinalPrice = () => {
+    if (!bookingData || !bookingData.slot) return 0;
+    
+    const basePrice = bookingData.slot.price;
+    if (bookingData.couponCode === 'WELCOME10') {
+      return basePrice * 0.9; // 10% discount
+    }
+    return basePrice;
+  };
+
   const handleDownloadInvoice = () => {
     try {
       console.log("Generating invoice for booking data:", bookingData);
@@ -62,7 +73,18 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({
         <p className="text-lg font-bold">{bookingData.slot ? formatSlotTime(bookingData.slot) : ''}</p>
         
         {bookingData && bookingData.slot && (
-          <p className="mt-2 font-medium">Amount: ₹{bookingData.slot.price}</p>
+          <div className="mt-2">
+            {bookingData.couponCode === 'WELCOME10' ? (
+              <div>
+                <p className="font-medium line-through">Original price: ₹{bookingData.slot.price}</p>
+                <p className="font-medium text-green-600">
+                  Amount: ₹{calculateFinalPrice()} <span className="text-xs">(10% discount applied)</span>
+                </p>
+              </div>
+            ) : (
+              <p className="font-medium">Amount: ₹{bookingData.slot.price}</p>
+            )}
+          </div>
         )}
       </div>
       
