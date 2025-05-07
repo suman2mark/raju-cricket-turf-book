@@ -242,6 +242,8 @@ serve(async (req) => {
         const booking = bookingDetails && bookingDetails.length > 0 ? bookingDetails[0] : null;
         const contactNumber = booking ? booking.mobile_number : phoneNumber;
         const actualPlayers = booking ? booking.players : players || 'Not specified';
+        const discountCode = booking && booking.discount_code ? `(Discount: ${booking.discount_code})` : '';
+        const finalPrice = booking && booking.final_price ? `₹${booking.final_price}` : (booking ? `₹${booking.price}` : 'Not specified');
         
         const adminMessageContent = `NEW BOOKING ALERT!
 
@@ -249,6 +251,7 @@ Name: ${name}
 Date: ${bookingDate}
 Time: ${slotTime}
 Players: ${actualPlayers}
+Price: ${finalPrice} ${discountCode}
 Contact: ${formatRegularPhoneNumber(contactNumber)}
 
 Please prepare the pitch accordingly.`;

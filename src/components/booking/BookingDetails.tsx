@@ -2,8 +2,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { formatDate, formatSlotTime } from '@/lib/utils';
+import { SlotTime } from '@/types';
+import { formatSlotTime, formatDate } from '@/lib/utils';
 
 interface BookingDetailsProps {
   name: string;
@@ -13,7 +13,10 @@ interface BookingDetailsProps {
   players: number;
   setPlayers: (players: number) => void;
   date: Date;
-  selectedSlot: any;
+  selectedSlot: SlotTime | null;
+  couponCode?: string;
+  setCouponCode?: (code: string) => void;
+  isFirstBooking?: boolean;
   errors: Record<string, string>;
   isSubmitting: boolean;
   translate: (key: string) => string;
@@ -29,88 +32,121 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({
   setPlayers,
   date,
   selectedSlot,
+  couponCode,
+  setCouponCode,
+  isFirstBooking,
   errors,
   isSubmitting,
   translate,
-  onSubmit
+  onSubmit,
 }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <form onSubmit={onSubmit} className="p-6 bg-white rounded-lg shadow-md">
       <h3 className="text-xl font-semibold mb-4">{translate('booking_details')}</h3>
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">{translate('name')}</Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={translate('name')}
-            />
-            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="mobileNumber">{translate('mobile_number')}</Label>
-            <Input
-              id="mobileNumber"
-              value={mobileNumber}
-              onChange={(e) => setMobileNumber(e.target.value)}
-              placeholder="10-digit mobile number"
-              type="tel"
-            />
-            {errors.mobileNumber && <p className="text-sm text-red-500">{errors.mobileNumber}</p>}
-          </div>
+
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium mb-1">
+            {translate('name')}
+          </label>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={translate('enter_name')}
+            className={errors.name ? "border-red-500" : ""}
+          />
+          {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
         </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="players">{translate('players')}</Label>
+
+        <div>
+          <label htmlFor="mobileNumber" className="block text-sm font-medium mb-1">
+            {translate('mobile_number')}
+          </label>
+          <Input
+            id="mobileNumber"
+            value={mobileNumber}
+            onChange={(e) => setMobileNumber(e.target.value)}
+            placeholder={translate('enter_mobile')}
+            className={errors.mobileNumber ? "border-red-500" : ""}
+          />
+          {errors.mobileNumber && <p className="mt-1 text-xs text-red-500">{errors.mobileNumber}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="players" className="block text-sm font-medium mb-1">
+            {translate('players_count')}
+          </label>
           <Input
             id="players"
-            value={players}
-            onChange={(e) => setPlayers(parseInt(e.target.value) || 0)}
             type="number"
-            min={2}
-            max={16}
+            min="2"
+            max="16"
+            value={players}
+            onChange={(e) => setPlayers(parseInt(e.target.value, 10))}
+            className={errors.players ? "border-red-500" : ""}
           />
-          {errors.players && <p className="text-sm text-red-500">{errors.players}</p>}
+          {errors.players && <p className="mt-1 text-xs text-red-500">{errors.players}</p>}
+          <p className="mt-1 text-xs text-gray-500">{translate('players_range')}</p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label>{translate('date')}</Label>
-            <p className="p-2 border rounded-md bg-gray-50">{formatDate(date)}</p>
-          </div>
-          
-          <div className="space-y-2">
-            <Label>{translate('time')}</Label>
-            {selectedSlot ? (
-              <p className="p-2 border rounded-md bg-gray-50">
-                {formatSlotTime(selectedSlot)} - {formatDate(date)}
-              </p>
-            ) : (
-              <p className="p-2 border rounded-md bg-gray-50 text-gray-400">
-                {translate('select_date')}
-              </p>
+
+        {setCouponCode && (
+          <div>
+            <label htmlFor="couponCode" className="block text-sm font-medium mb-1">
+              {translate('coupon_code')}
+            </label>
+            <Input
+              id="couponCode"
+              value={couponCode || ''}
+              onChange={(e) => setCouponCode(e.target.value)}
+              placeholder="Enter coupon code (e.g. WELCOME10)"
+              className={errors.couponCode ? "border-red-500" : ""}
+            />
+            {isFirstBooking && (
+              <p className="mt-1 text-xs text-green-600">First-time booking! Use code WELCOME10 for 10% off</p>
             )}
-            {errors.slot && <p className="text-sm text-red-500">{errors.slot}</p>}
+            {errors.couponCode && <p className="mt-1 text-xs text-red-500">{errors.couponCode}</p>}
+          </div>
+        )}
+
+        <div className="rounded-md bg-gray-50 p-4">
+          <h4 className="font-medium mb-2">{translate('booking_summary')}</h4>
+          <div className="text-sm text-gray-600">
+            <p>
+              {translate('date')}: {formatDate(date)}
+            </p>
+            {selectedSlot ? (
+              <>
+                <p className="mt-1">
+                  {translate('time')}: {formatSlotTime(selectedSlot)}
+                </p>
+                <p className="mt-1">
+                  {translate('price')}: ₹{selectedSlot.price}
+                  {isFirstBooking && couponCode === 'WELCOME10' && (
+                    <>
+                      <span className="line-through ml-1">₹{selectedSlot.price}</span>
+                      <span className="text-green-600 font-medium ml-1">₹{selectedSlot.price * 0.9}</span>
+                    </>
+                  )}
+                </p>
+              </>
+            ) : (
+              <p className="mt-1 text-amber-600">{translate('no_slot_selected')}</p>
+            )}
           </div>
         </div>
-        
-        <div className="pt-4">
-          <p className="text-sm text-gray-600 mb-4">
-            {translate('payment_info')}
-          </p>
-          <Button
-            type="submit"
-            className="w-full bg-primary hover:bg-primary/90 text-white py-6"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Loading...' : translate('confirm_booking')}
-          </Button>
-        </div>
-      </form>
-    </div>
+      </div>
+
+      <div className="mt-6">
+        <Button
+          type="submit"
+          disabled={isSubmitting || !selectedSlot}
+          className="w-full"
+        >
+          {isSubmitting ? translate('confirming') : translate('confirm_booking')}
+        </Button>
+      </div>
+    </form>
   );
 };
 

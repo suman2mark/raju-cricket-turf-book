@@ -49,18 +49,36 @@ export function generateInvoicePDF(bookingData: BookingFormData): void {
   
   const subtotal = bookingData.slot.price;
   const gstRate = 18; // 18% GST
-  const gstAmount = (subtotal * gstRate) / 100;
-  const total = subtotal + gstAmount;
   
-  // Create a table for payment details using autoTable directly
+  // Calculate discount if coupon is applied
+  let discountAmount = 0;
+  if (bookingData.couponCode === 'WELCOME10') {
+    discountAmount = subtotal * 0.1;
+  }
+  
+  const discountedSubtotal = subtotal - discountAmount;
+  const gstAmount = (discountedSubtotal * gstRate) / 100;
+  const total = discountedSubtotal + gstAmount;
+  
+  // Create a table for payment details using autoTable
+  const tableBody = [
+    ['Slot Charge', `₹${subtotal.toFixed(2)}`]
+  ];
+  
+  // Add discount row if applicable
+  if (discountAmount > 0) {
+    tableBody.push([`Discount (${bookingData.couponCode})`, `-₹${discountAmount.toFixed(2)}`]);
+    tableBody.push(['Subtotal after discount', `₹${discountedSubtotal.toFixed(2)}`]);
+  }
+  
+  tableBody.push([`GST (${gstRate}%)`, `₹${gstAmount.toFixed(2)}`]);
+  tableBody.push(['Total', `₹${total.toFixed(2)}`]);
+  
+  // Create the table
   autoTable(doc, {
     startY: 150,
     head: [['Description', 'Amount']],
-    body: [
-      ['Slot Charge', `₹${subtotal.toFixed(2)}`],
-      [`GST (${gstRate}%)`, `₹${gstAmount.toFixed(2)}`],
-      ['Total', `₹${total.toFixed(2)}`]
-    ],
+    body: tableBody,
     theme: 'striped',
     headStyles: { fillColor: [39, 174, 96] },
     foot: [['Payment Status', 'To be paid at venue']],

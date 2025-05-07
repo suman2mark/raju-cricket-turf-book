@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { BookingFormData } from '@/types';
@@ -15,6 +15,20 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({
   bookingData, 
   onResetForm 
 }) => {
+  // Auto-generate invoice PDF when component mounts
+  useEffect(() => {
+    try {
+      console.log("Auto-generating invoice for booking data:", bookingData);
+      if (bookingData && bookingData.slot) {
+        generateInvoicePDF(bookingData);
+      } else {
+        console.error("Cannot generate invoice: Invalid booking data");
+      }
+    } catch (error) {
+      console.error("Error auto-generating PDF:", error);
+    }
+  }, [bookingData]);
+
   const handleDownloadInvoice = () => {
     try {
       console.log("Generating invoice for booking data:", bookingData);

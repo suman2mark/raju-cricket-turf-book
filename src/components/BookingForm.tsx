@@ -8,7 +8,8 @@ import { toast } from '@/components/ui/sonner';
 import SlotMap from './SlotMap';
 import { 
   createBooking, 
-  isSlotBooked
+  isSlotBooked,
+  hasBookedBefore
 } from '@/services/bookingService';
 import { generateInvoicePDF } from '@/lib/invoiceGenerator';
 import { BookingCalendar, BookingDetails, BookingSuccess } from './booking';
@@ -26,6 +27,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
   const [name, setName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [players, setPlayers] = useState<number>(2);
+  const [couponCode, setCouponCode] = useState<string>('');
+  const [isFirstBooking, setIsFirstBooking] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitLoading, setSubmitLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
@@ -35,6 +38,27 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     // Clear selected slot when date changes
     setSelectedSlot(null);
   }, [date]);
+
+  // Check if user is making their first booking when mobile number changes
+  useEffect(() => {
+    const checkFirstBooking = async () => {
+      if (mobileNumber && mobileNumber.length === 10) {
+        try {
+          const hadPreviousBooking = await hasBookedBefore(mobileNumber);
+          setIsFirstBooking(!hadPreviousBooking);
+          
+          // Auto-fill coupon code for first-time users
+          if (!hadPreviousBooking && !couponCode) {
+            setCouponCode('WELCOME10');
+          }
+        } catch (error) {
+          console.error("Error checking booking history:", error);
+        }
+      }
+    };
+    
+    checkFirstBooking();
+  }, [mobileNumber]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -59,6 +83,16 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     
     if (!selectedSlot) {
       newErrors.slot = translate('required');
+    }
+    
+    // Validate coupon code if provided
+    if (couponCode && couponCode !== 'WELCOME10') {
+      newErrors.couponCode = 'Invalid coupon code';
+    }
+    
+    // Check if user is eligible for the coupon
+    if (couponCode === 'WELCOME10' && !isFirstBooking) {
+      newErrors.couponCode = 'This coupon is for first-time customers only';
     }
     
     setErrors(newErrors);
@@ -91,7 +125,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         mobileNumber,
         players,
         date,
-        slot: selectedSlot
+        slot: selectedSlot,
+        couponCode: couponCode || undefined
       };
       
       try {
@@ -102,13 +137,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         
         // Store booking data for success screen
         setBookingData(formData);
-        
-        try {
-          // Generate and download PDF invoice
-          generateInvoicePDF(formData);
-        } catch (pdfError) {
-          console.error("Error generating PDF:", pdfError);
-        }
         
         // Call the original onSubmit if needed
         onSubmit(formData);
@@ -146,6 +174,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
     setName('');
     setMobileNumber('');
     setPlayers(2);
+    setCouponCode('');
   };
 
   // Show success screen if booking was successful
@@ -179,6 +208,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, isLoading }) => {
         setPlayers={setPlayers}
         date={date}
         selectedSlot={selectedSlot}
+        couponCode={couponCode}
+        setCouponCode={setCouponCode}
+        isFirstBooking={isFirstBooking}
         errors={errors}
         isSubmitting={submitLoading || isLoading}
         translate={translate}

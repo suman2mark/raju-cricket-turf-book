@@ -13,6 +13,7 @@ export type BookingFormData = {
   players: number;
   date: Date;
   slot: SlotTime | null;
+  couponCode?: string;
 };
 
 export type BookingData = BookingFormData & {

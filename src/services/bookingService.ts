@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { BookingFormData, SlotTime } from '@/types';
 import { format } from 'date-fns';
@@ -88,6 +87,38 @@ export async function sendWhatsAppNotification(
   }
 }
 
+// Check if a mobile number has made a booking before
+export async function hasBookedBefore(mobileNumber: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('id')
+      .eq('mobile_number', mobileNumber)
+      .limit(1);
+    
+    if (error) {
+      console.error('Error checking booking history:', error);
+      throw new Error('Failed to check booking history');
+    }
+    
+    // If data exists and has length, the user has booked before
+    return data !== null && data.length > 0;
+  } catch (error) {
+    console.error('Exception checking booking history:', error);
+    throw new Error('Failed to check booking history');
+  }
+}
+
+// Apply discount coupon (if applicable)
+export function applyCouponDiscount(price: number, couponCode: string, isFirstTimeBooking: boolean): number {
+  if (couponCode === 'WELCOME10' && isFirstTimeBooking) {
+    // Apply 10% discount
+    const discountAmount = price * 0.1;
+    return price - discountAmount;
+  }
+  return price;
+}
+
 // Create a new booking
 export async function createBooking(bookingData: BookingFormData): Promise<{ id: string }> {
   try {
@@ -102,6 +133,15 @@ export async function createBooking(bookingData: BookingFormData): Promise<{ id:
     if (isAlreadyBooked) {
       throw new Error('This slot has just been booked by someone else. Please select another slot.');
     }
+
+    // Check if this is the user's first booking
+    const isFirstTimeBooking = !(await hasBookedBefore(bookingData.mobileNumber));
+    
+    // Calculate final price (with discount if applicable)
+    let finalPrice = bookingData.slot.price;
+    if (bookingData.couponCode && isFirstTimeBooking) {
+      finalPrice = applyCouponDiscount(finalPrice, bookingData.couponCode, isFirstTimeBooking);
+    }
     
     const { data, error } = await supabase
       .from('bookings')
@@ -113,7 +153,9 @@ export async function createBooking(bookingData: BookingFormData): Promise<{ id:
         slot_id: bookingData.slot.id,
         start_time: bookingData.slot.startTime,
         end_time: bookingData.slot.endTime,
-        is_night_session: bookingData.slot.isNightSession
+        is_night_session: bookingData.slot.isNightSession,
+        discount_code: bookingData.couponCode || null,
+        final_price: finalPrice
       })
       .select('id')
       .single();
