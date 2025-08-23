@@ -76,19 +76,14 @@ const FloatingContacts: React.FC = () => {
           <TooltipTrigger asChild>
             <button
               onClick={toggleContacts}
-              className="w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center relative overflow-hidden group"
+              className="w-14 h-14 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center relative overflow-hidden group"
               aria-label={isOpen ? "Close contacts" : "Open contacts"}
             >
+              <div className="absolute inset-0 bg-white/20 rounded-full transition-all duration-300 group-hover:bg-white/30"></div>
               {isOpen ? (
-                <div className="w-14 h-14 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-full flex items-center justify-center">
-                  <X className="w-6 h-6 transition-transform duration-200" />
-                </div>
+                <X className="w-6 h-6 relative z-10 transition-transform duration-200" />
               ) : (
-                <img 
-                  src="/lovable-uploads/225b815b-f9d5-4202-b424-a8e4aebc0fa3.png" 
-                  alt="Contact us" 
-                  className="w-14 h-14 rounded-full transition-transform duration-200 hover:scale-110"
-                />
+                <MessageSquare className="w-6 h-6 relative z-10 transition-transform duration-200" />
               )}
             </button>
           </TooltipTrigger>
