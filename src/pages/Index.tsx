@@ -14,6 +14,7 @@ import GroundGallery from '@/components/GroundGallery';
 import Memorial from '@/components/Memorial';
 import FloatingContacts from '@/components/FloatingContacts';
 import DailyBookingDashboard from '@/components/DailyBookingDashboard';
+import CricketFacts from '@/components/CricketFacts';
 import { Toaster } from 'sonner';
 
 // The main component that uses the language context
@@ -61,8 +62,11 @@ const MainContent = () => {
         
         {/* Ground gallery section moved after hero */}
         <GroundGallery />
+        
+        {/* Cricket Facts section for engagement */}
+        <CricketFacts />
 
-        {/* Add the Daily Booking Dashboard after the ground gallery */}
+        {/* Add the Daily Booking Dashboard after cricket facts */}
         <DailyBookingDashboard />
         
         <section id="booking" className="py-20 bg-white">
