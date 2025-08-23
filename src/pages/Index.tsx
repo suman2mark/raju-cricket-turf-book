@@ -12,6 +12,7 @@ import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import GroundGallery from '@/components/GroundGallery';
 import Memorial from '@/components/Memorial';
+import FloatingContacts from '@/components/FloatingContacts';
 import DailyBookingDashboard from '@/components/DailyBookingDashboard';
 import { Toaster } from 'sonner';
 
@@ -48,8 +49,11 @@ const MainContent = () => {
       <Toaster position="top-center" />
       <Header scrollToSection={scrollToSection} />
       
-      {/* Memorial placed at the top right */}
+      {/* Memorial placed at the top left */}
       <Memorial />
+      
+      {/* Floating contact buttons on the right side */}
+      <FloatingContacts />
       
       <main className="flex-grow">
         {/* Hero section with the banner images */}
