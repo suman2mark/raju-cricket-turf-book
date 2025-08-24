@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Sparkles, Calendar, Users } from 'lucide-react';
+import { X, Sparkles, Trophy, Heart } from 'lucide-react';
 
 const WelcomeMessage: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [todayBookings, setTodayBookings] = useState<any[]>([
-    { name: "Team Alpha", players: 11 },
-    { name: "Warriors", players: 8 },
-    { name: "Champions", players: 15 },
-    { name: "Tigers", players: 12 }
-  ]);
 
   useEffect(() => {
     // Show welcome message after a short delay
@@ -127,45 +121,41 @@ const WelcomeMessage: React.FC = () => {
               <Sparkles className="w-6 h-6 text-orange-200 animate-pulse" />
             </div>
             <h2 className="text-xl font-bold bg-gradient-to-r from-orange-200 via-yellow-200 to-red-200 bg-clip-text text-transparent drop-shadow-lg">
-              Welcome to Our Cricket Ground!
+              Welcome to our Cricket Ground!
             </h2>
           </div>
           
           <p className="text-orange-100/90 leading-relaxed mb-4 drop-shadow-md">
-            Experience the thrill of cricket at our premium facility. Book your slot now and enjoy world-class pitches with modern amenities!
+            Step into greatness! Where champions are born and legends are made. Your cricket journey begins here with state-of-the-art facilities and an unforgettable experience.
           </p>
           
-          <div className="space-y-3">
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-2 text-orange-200/90">
-                <Calendar className="w-4 h-4 text-orange-300" />
-                <span>Today's Bookings: <span className="font-bold text-yellow-200 drop-shadow-sm">{todayBookings.length}</span></span>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="flex items-center gap-2 text-orange-200/90 bg-orange-500/10 rounded-lg p-2 backdrop-blur-sm border border-orange-400/20">
+                <Trophy className="w-4 h-4 text-yellow-300" />
+                <span className="font-medium">Professional Grade Pitches</span>
               </div>
-              <div className="text-orange-200/80 font-medium">
-                🏏 Premium Cricket Experience
+              <div className="flex items-center gap-2 text-orange-200/90 bg-red-500/10 rounded-lg p-2 backdrop-blur-sm border border-red-400/20">
+                <Heart className="w-4 h-4 text-pink-300" />
+                <span className="font-medium">Passionate Cricket Community</span>
               </div>
             </div>
             
-            {todayBookings.length > 0 && (
-              <div className="bg-gradient-to-r from-orange-500/20 via-red-500/20 to-yellow-500/20 rounded-lg p-3 backdrop-blur-md border border-orange-400/20 shadow-inner">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="w-4 h-4 text-orange-300" />
-                  <span className="text-sm font-medium text-orange-200">Recent Bookings:</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {todayBookings.slice(0, 3).map((booking: any, index: number) => (
-                    <div key={index} className="bg-gradient-to-r from-orange-400/30 to-red-400/30 rounded-full px-3 py-1 text-xs text-orange-100 font-medium backdrop-blur-sm border border-orange-300/20 shadow-sm">
-                      {booking.name} ({booking.players} players)
-                    </div>
-                  ))}
-                  {todayBookings.length > 3 && (
-                    <div className="bg-gradient-to-r from-yellow-400/30 to-orange-400/30 rounded-full px-3 py-1 text-xs text-orange-100 font-medium backdrop-blur-sm border border-yellow-300/20 shadow-sm">
-                      +{todayBookings.length - 3} more
-                    </div>
-                  )}
-                </div>
+            <div className="bg-gradient-to-r from-orange-500/20 via-red-500/20 to-yellow-500/20 rounded-lg p-4 backdrop-blur-md border border-orange-400/20 shadow-inner text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="text-2xl">🏏</span>
+                <span className="text-lg font-bold text-orange-200">Ready to Play?</span>
+                <span className="text-2xl">🔥</span>
               </div>
-            )}
+              <p className="text-orange-100/80 text-sm leading-relaxed">
+                "Every great cricketer started with a single step onto the pitch. Make yours count!"
+              </p>
+              <div className="mt-3 flex justify-center items-center gap-1">
+                <span className="text-yellow-300 text-sm animate-pulse">⭐</span>
+                <span className="text-orange-200/80 text-xs font-medium">Your Victory Awaits</span>
+                <span className="text-yellow-300 text-sm animate-pulse">⭐</span>
+              </div>
+            </div>
           </div>
         </div>
 
