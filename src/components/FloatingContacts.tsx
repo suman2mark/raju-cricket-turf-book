@@ -19,7 +19,7 @@ const FloatingContacts: React.FC = () => {
   };
 
   return (
-    <div className="fixed right-4 bottom-17 z-50 flex flex-col items-center gap-3">
+    <div className="fixed right-4 bottom-17 z-60 flex flex-col items-center gap-3">
       <TooltipProvider>
         {/* Contact Options - Show when open */}
         <div className={`transition-all duration-300 ease-out ${
