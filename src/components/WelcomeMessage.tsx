@@ -121,7 +121,7 @@ const WelcomeMessage: React.FC = () => {
               <Sparkles className="w-6 h-6 text-orange-200 animate-pulse" />
             </div>
             <h2 className="text-xl font-bold bg-gradient-to-r from-orange-200 via-yellow-200 to-red-200 bg-clip-text text-transparent drop-shadow-lg">
-              Welcome to Paradise Cricket Ground!
+              Welcome to Our Box Cricket Ground!
             </h2>
           </div>
           
