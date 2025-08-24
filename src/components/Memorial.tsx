@@ -28,7 +28,7 @@ const Memorial: React.FC = () => {
               
               {/* Elegant memorial badge */}
               <div className="mt-2 text-[9px] font-semibold text-center text-white bg-gradient-to-r from-rose-500/95 via-pink-500/95 to-purple-500/95 rounded-full px-2 py-1 shadow-lg backdrop-blur-sm border border-rose-200/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-[0_0_15px_rgba(244,114,182,0.6)]">
-                <span className="drop-shadow-sm tracking-wide">Forever My Angel</span>
+                <span className="drop-shadow-sm tracking-wide">In Loving Memory</span>
               </div>
             </div>
           </TooltipTrigger>
