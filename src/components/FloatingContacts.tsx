@@ -1,96 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Phone, MessageCircle, MessageSquare, X, Move } from 'lucide-react';
+import React, { useState } from 'react';
+import { Phone, MessageCircle, MessageSquare, X } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ADMIN_WHATSAPP_NUMBER } from '@/lib/utils';
 
 const FloatingContacts: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({ x: window.innerWidth - 100, y: 24 });
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const widgetRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging && widgetRef.current) {
-        const newX = e.clientX - dragOffset.x;
-        const newY = e.clientY - dragOffset.y;
-        
-        // Get widget dimensions for boundary checking
-        const rect = widgetRef.current.getBoundingClientRect();
-        const maxX = window.innerWidth - rect.width;
-        const maxY = window.innerHeight - rect.height;
-        
-        // Apply boundary constraints
-        const constrainedX = Math.max(0, Math.min(newX, maxX));
-        const constrainedY = Math.max(0, Math.min(newY, maxY));
-        
-        setPosition({ x: constrainedX, y: constrainedY });
-      }
-    };
-
-    const handleMouseimport React, { useState, useRef, useEffect } from 'react';
-import { Phone, MessageCircle, MessageSquare, X, Move } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { ADMIN_WHATSAPP_NUMBER } from '@/lib/utils';
-
-const FloatingContacts: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({ x: window.innerWidth - 120, y: 50 });
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const widgetRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        e.preventDefault();
-        const newX = e.clientX - dragOffset.x;
-        const newY = e.clientY - dragOffset.y;
-        
-        // Get viewport dimensions for boundary checking
-        const maxX = window.innerWidth - 300; // Account for expanded width
-        const maxY = window.innerHeight - 100;
-        
-        // Apply boundary constraints
-        const constrainedX = Math.max(0, Math.min(newX, maxX));
-        const constrainedY = Math.max(0, Math.min(newY, maxY));
-        
-        setPosition({ x: constrainedX, y: constrainedY });
-      }
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      document.body.style.cursor = '';
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.body.style.cursor = 'grabbing';
-      document.body.style.userSelect = 'none';
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.body.style.userSelect = '';
-      document.body.style.cursor = '';
-    };
-  }, [isDragging, dragOffset]);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    });
-    setIsDragging(true);
-  };
 
   const handleWhatsAppClick = () => {
     window.open(`https://wa.me/${ADMIN_WHATSAPP_NUMBER}`, '_blank');
@@ -105,43 +19,27 @@ const FloatingContacts: React.FC = () => {
   };
 
   return (
-    <div 
-      ref={widgetRef}
-      className={`fixed flex flex-col items-end gap-3 select-none ${
-        isDragging ? 'z-[9999] scale-105' : 'z-50'
-      }`}
-      style={{ 
-        left: `${position.x}px`, 
-        top: `${position.y}px`,
-        filter: isDragging ? 'drop-shadow(0 20px 25px rgb(0 0 0 / 0.25))' : 'drop-shadow(0 4px 6px rgb(0 0 0 / 0.1))',
-        transition: isDragging ? 'none' : 'all 0.3s ease-out'
-      }}
-    >
+    <div className="fixed top-1/2 right-4 transform -translate-y-1/2 z-50 flex flex-col gap-3 pr-2">
       <TooltipProvider>
         {/* Contact Options - Show when open */}
-        <div className={`transition-all duration-500 ease-out ${
-          isOpen ? 'opacity-100 translate-x-0 scale-100 max-h-96' : 'opacity-0 translate-x-4 scale-95 pointer-events-none max-h-0 overflow-hidden'
+        <div className={`transition-all duration-300 ease-out ${
+          isOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
         } flex flex-col gap-3 mb-3`}>
           
           {/* Contact Info Card */}
-          <div className={`bg-white rounded-2xl shadow-lg border border-gray-100 min-w-[200px] transition-all duration-500 ${
-            isOpen ? 'p-4 opacity-100' : 'p-0 opacity-0'
-          }`}>
-            <div className={`text-center mb-3 transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100 min-w-[200px] animate-fade-in">
+            <div className="text-center mb-3">
               <h3 className="text-sm font-bold text-gray-800">Contact Us</h3>
               <p className="text-xs text-gray-600">+91 {ADMIN_WHATSAPP_NUMBER}</p>
             </div>
             
-            <div className={`flex gap-2 justify-center transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="flex gap-2 justify-center">
               {/* WhatsApp Button */}
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleWhatsAppClick();
-                    }}
-                    className="flex-1 bg-green-500 hover:bg-green-600 text-white rounded-xl py-3 px-4 transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 shadow-md transform"
+                    onClick={handleWhatsAppClick}
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white rounded-xl py-3 px-4 transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2 shadow-md"
                     aria-label="Contact via WhatsApp"
                   >
                     <MessageCircle className="w-4 h-4" />
@@ -157,11 +55,8 @@ const FloatingContacts: React.FC = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePhoneClick();
-                    }}
-                    className="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-xl py-3 px-4 transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 shadow-md transform"
+                    onClick={handlePhoneClick}
+                    className="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-xl py-3 px-4 transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2 shadow-md"
                     aria-label="Call us"
                   >
                     <Phone className="w-4 h-4" />
@@ -185,11 +80,11 @@ const FloatingContacts: React.FC = () => {
               aria-label={isOpen ? "Close contacts" : "Open contacts"}
             >
               {isOpen ? (
-                <div className="w-20 h-20 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full flex items-center justify-center transition-all duration-300">
-                  <X className="w-8 h-8 transition-transform duration-300 hover:rotate-90" />
+                <div className="w-20 h-20 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-full flex items-center justify-center">
+                  <X className="w-8 h-8 transition-transform duration-200" />
                 </div>
               ) : (
-                <div className="relative w-16 h-16 rounded-full overflow-hidden transition-all duration-300 hover:w-18 hover:h-18">
+                <div className="relative w-20 h-20 rounded-full overflow-hidden">
                   {/* Fireball animation background */}
                   <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-red-500 to-yellow-400 rounded-full animate-pulse"></div>
                   <div className="absolute inset-0.5 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 rounded-full animate-spin-slow"></div>
@@ -199,13 +94,13 @@ const FloatingContacts: React.FC = () => {
                   <img 
                     src="/lovable-uploads/225b815b-f9d5-4202-b424-a8e4aebc0fa3.png" 
                     alt="Contact us" 
-                    className="relative w-16 h-16 rounded-full transition-transform duration-300 hover:scale-105 z-10"
+                    className="relative w-20 h-20 rounded-full transition-transform duration-200 hover:scale-105 z-10"
                   />
                   
                   {/* Fire particles */}
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-ping opacity-60"></div>
-                  <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-red-400 rounded-full animate-ping opacity-40 animation-delay-200"></div>
-                  <div className="absolute top-1 -left-1.5 w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping opacity-50 animation-delay-400"></div>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full animate-ping opacity-60"></div>
+                  <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-red-400 rounded-full animate-ping opacity-40 animation-delay-200"></div>
+                  <div className="absolute top-1 -left-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-50 animation-delay-400"></div>
                 </div>
               )}
             </button>
