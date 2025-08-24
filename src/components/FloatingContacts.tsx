@@ -29,51 +29,67 @@ const FloatingContacts: React.FC = () => {
       }
     };
 
+    const handleMouseimport React, { useState, useRef, useEffect } from 'react';
+import { Phone, MessageCircle, MessageSquare, X, Move } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { ADMIN_WHATSAPP_NUMBER } from '@/lib/utils';
+
+const FloatingContacts: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState({ x: window.innerWidth - 120, y: 50 });
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const widgetRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        e.preventDefault();
+        const newX = e.clientX - dragOffset.x;
+        const newY = e.clientY - dragOffset.y;
+        
+        // Get viewport dimensions for boundary checking
+        const maxX = window.innerWidth - 300; // Account for expanded width
+        const maxY = window.innerHeight - 100;
+        
+        // Apply boundary constraints
+        const constrainedX = Math.max(0, Math.min(newX, maxX));
+        const constrainedY = Math.max(0, Math.min(newY, maxY));
+        
+        setPosition({ x: constrainedX, y: constrainedY });
+      }
+    };
+
     const handleMouseUp = () => {
       setIsDragging(false);
+      document.body.style.cursor = '';
     };
 
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
-      document.body.style.userSelect = 'none'; // Prevent text selection while dragging
+      document.body.style.cursor = 'grabbing';
+      document.body.style.userSelect = 'none';
     }
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
       document.body.style.userSelect = '';
+      document.body.style.cursor = '';
     };
   }, [isDragging, dragOffset]);
 
-  useEffect(() => {
-    // Handle window resize to keep widget in bounds
-    const handleResize = () => {
-      if (widgetRef.current) {
-        const rect = widgetRef.current.getBoundingClientRect();
-        const maxX = window.innerWidth - rect.width;
-        const maxY = window.innerHeight - rect.height;
-        
-        setPosition(prev => ({
-          x: Math.max(0, Math.min(prev.x, maxX)),
-          y: Math.max(0, Math.min(prev.y, maxY))
-        }));
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (widgetRef.current) {
-      const rect = widgetRef.current.getBoundingClientRect();
-      setDragOffset({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-      setIsDragging(true);
-    }
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+    setIsDragging(true);
   };
 
   const handleWhatsAppClick = () => {
@@ -91,15 +107,15 @@ const FloatingContacts: React.FC = () => {
   return (
     <div 
       ref={widgetRef}
-      className={`fixed flex flex-col items-end gap-3 transition-all duration-300 ${
-        isDragging ? 'z-[9999] cursor-grabbing scale-105' : 'z-50 cursor-grab'
+      className={`fixed flex flex-col items-end gap-3 select-none ${
+        isDragging ? 'z-[9999] scale-105' : 'z-50'
       }`}
       style={{ 
         left: `${position.x}px`, 
         top: `${position.y}px`,
-        filter: isDragging ? 'drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))' : ''
+        filter: isDragging ? 'drop-shadow(0 20px 25px rgb(0 0 0 / 0.25))' : 'drop-shadow(0 4px 6px rgb(0 0 0 / 0.1))',
+        transition: isDragging ? 'none' : 'all 0.3s ease-out'
       }}
-      onMouseDown={handleMouseDown}
     >
       <TooltipProvider>
         {/* Contact Options - Show when open */}
