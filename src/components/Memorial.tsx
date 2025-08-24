@@ -9,27 +9,27 @@ const Memorial: React.FC = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="cursor-pointer transition-all duration-700 hover:scale-105 group relative">
-              {/* Outer ethereal glow - multiple layers for depth with pink/rose theme */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-200/30 via-pink-100/40 to-rose-200/30 blur-xl scale-150 animate-pulse opacity-50 group-hover:opacity-80 transition-all duration-1000"></div>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-200/20 via-rose-100/30 to-pink-200/20 blur-lg scale-130 animate-pulse opacity-60 group-hover:opacity-90 transition-all duration-1000" style={{animationDelay: '0.5s'}}></div>
+              {/* Outer ethereal glow - multiple layers for depth */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-200/30 via-yellow-100/40 to-amber-200/30 blur-xl scale-150 animate-pulse opacity-50 group-hover:opacity-80 transition-all duration-1000"></div>
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-200/20 via-pink-100/30 to-rose-200/20 blur-lg scale-130 animate-pulse opacity-60 group-hover:opacity-90 transition-all duration-1000" style={{animationDelay: '0.5s'}}></div>
               
-              {/* Inner radial warmth with love colors */}
-              <div className="absolute inset-0 rounded-full bg-gradient-radial from-rose-50/50 via-pink-50/30 to-transparent scale-140 animate-pulse" style={{animationDelay: '1s'}}></div>
+              {/* Inner radial warmth */}
+              <div className="absolute inset-0 rounded-full bg-gradient-radial from-amber-50/50 via-yellow-50/30 to-transparent scale-140 animate-pulse" style={{animationDelay: '1s'}}></div>
               
               {/* Main avatar with enhanced styling */}
-              <Avatar className="relative w-16 h-16 border-4 border-gradient-to-br from-rose-200/90 via-pink-100 to-rose-200/90 shadow-2xl hover:shadow-rose-200/50 transition-all duration-700 ring-4 ring-pink-100/40 ring-offset-4 ring-offset-white/90 group-hover:ring-rose-200/60 group-hover:ring-offset-pink-50/30">
+              <Avatar className="relative w-16 h-16 border-4 border-gradient-to-br from-amber-200/90 via-yellow-100 to-amber-200/90 shadow-2xl hover:shadow-amber-200/50 transition-all duration-700 ring-4 ring-amber-100/40 ring-offset-4 ring-offset-white/90 group-hover:ring-amber-200/60 group-hover:ring-offset-amber-50/30">
                 <AvatarImage 
                   src="/lovable-uploads/082875b7-798c-40c6-a25d-0f0a86b3441f.png" 
                   alt="In Loving Memory of Mother" 
                   className="object-cover transition-all duration-700 group-hover:brightness-110 group-hover:contrast-105 filter sepia-[0.1] group-hover:sepia-0"
                 />
-                <AvatarFallback className="bg-gradient-to-br from-rose-100 via-pink-50 to-rose-100 text-rose-700 text-2xl">
-                  <span className="animate-pulse">💕</span>
+                <AvatarFallback className="bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-100 text-amber-700 text-2xl">
+                  <span className="animate-pulse">🌟</span>
                 </AvatarFallback>
               </Avatar>
               
               {/* Enhanced memorial badge */}
-              <div className="mt-3 text-[10px] font-bold text-center text-white bg-gradient-to-r from-rose-600/95 via-pink-500/95 to-rose-600/95 rounded-full px-4 py-1.5 shadow-xl backdrop-blur-md border-2 border-rose-200/50 transition-all duration-500 group-hover:scale-110 group-hover:shadow-rose-300/60 group-hover:border-rose-300/70">
+              <div className="mt-3 text-[10px] font-bold text-center text-white bg-gradient-to-r from-amber-600/95 via-yellow-500/95 to-amber-600/95 rounded-full px-4 py-1.5 shadow-xl backdrop-blur-md border-2 border-amber-200/50 transition-all duration-500 group-hover:scale-110 group-hover:shadow-amber-300/60 group-hover:border-amber-300/70">
                 <span className="drop-shadow-lg tracking-wider">Forever Loved</span>
               </div>
               
@@ -58,50 +58,50 @@ const Memorial: React.FC = () => {
               
               <div className="absolute -top-3 left-3 text-pink-400 text-sm opacity-55 animate-pulse" style={{animationDelay: '6s', filter: 'drop-shadow(0 0 4px rgba(244, 114, 182, 0.6))'}}>💓</div>
               
-              {/* Subtle orbiting light effect with love theme */}
-              <div className="absolute inset-0 rounded-full border border-rose-200/20 scale-125 animate-spin opacity-30" style={{animationDuration: '20s'}}></div>
-              <div className="absolute inset-0 rounded-full border border-pink-200/15 scale-110 animate-spin opacity-25" style={{animationDuration: '15s', animationDirection: 'reverse'}}></div>
+              {/* Subtle orbiting light effect */}
+              <div className="absolute inset-0 rounded-full border border-amber-200/20 scale-125 animate-spin opacity-30" style={{animationDuration: '20s'}}></div>
+              <div className="absolute inset-0 rounded-full border border-yellow-200/15 scale-110 animate-spin opacity-25" style={{animationDuration: '15s', animationDirection: 'reverse'}}></div>
             </div>
           </TooltipTrigger>
-          <TooltipContent side="right" className="bg-gradient-to-br from-white/98 via-rose-25/95 to-pink-50/98 backdrop-blur-xl border-3 border-rose-200/60 shadow-2xl p-6 max-w-[260px] rounded-3xl ring-1 ring-rose-100/50">
+          <TooltipContent side="right" className="bg-gradient-to-br from-white/98 via-amber-25/95 to-cream-50/98 backdrop-blur-xl border-3 border-amber-200/60 shadow-2xl p-6 max-w-[260px] rounded-3xl ring-1 ring-amber-100/50">
             <div className="text-center space-y-3">
-              {/* Elegant top ornament with flowers */}
+              {/* Elegant top ornament */}
               <div className="flex justify-center items-center space-x-2 mb-4">
-                <div className="w-6 h-0.5 bg-gradient-to-r from-transparent via-rose-400 to-pink-300"></div>
-                <span className="text-pink-500 text-lg">🌹</span>
-                <div className="w-6 h-0.5 bg-gradient-to-r from-pink-300 via-rose-400 to-transparent"></div>
+                <div className="w-6 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-amber-300"></div>
+                <span className="text-amber-500 text-lg">✨</span>
+                <div className="w-6 h-0.5 bg-gradient-to-r from-amber-300 via-amber-400 to-transparent"></div>
               </div>
               
               <div className="space-y-2">
-                <p className="text-base text-gray-800 font-bold tracking-wide bg-gradient-to-r from-rose-700 to-pink-600 bg-clip-text text-transparent">
+                <p className="text-base text-gray-800 font-bold tracking-wide bg-gradient-to-r from-amber-700 to-yellow-600 bg-clip-text text-transparent">
                   In Loving Memory
                 </p>
-                <p className="text-sm text-rose-800/90 font-medium">
+                <p className="text-sm text-amber-800/90 font-medium">
                   A mother's love lives on
                 </p>
-                <p className="text-xs text-rose-600/80 italic leading-relaxed">
+                <p className="text-xs text-amber-600/80 italic leading-relaxed">
                   Forever cherished, never forgotten
                 </p>
               </div>
               
-              {/* Decorative heart and flower row */}
+              {/* Decorative heart row */}
               <div className="flex justify-center items-center space-x-2 py-2">
-                <span className="text-rose-400 text-sm animate-pulse">🌸</span>
-                <span className="text-pink-400 text-base animate-pulse" style={{animationDelay: '0.3s'}}>♥</span>
-                <span className="text-rose-500 text-lg animate-pulse" style={{animationDelay: '0.6s'}}>💖</span>
-                <span className="text-pink-400 text-base animate-pulse" style={{animationDelay: '0.9s'}}>♥</span>
-                <span className="text-rose-400 text-sm animate-pulse" style={{animationDelay: '1.2s'}}>🌸</span>
+                <span className="text-amber-400 text-sm animate-pulse">♥</span>
+                <span className="text-yellow-400 text-base animate-pulse" style={{animationDelay: '0.3s'}}>♥</span>
+                <span className="text-amber-500 text-lg animate-pulse" style={{animationDelay: '0.6s'}}>♥</span>
+                <span className="text-yellow-400 text-base animate-pulse" style={{animationDelay: '0.9s'}}>♥</span>
+                <span className="text-amber-400 text-sm animate-pulse" style={{animationDelay: '1.2s'}}>♥</span>
               </div>
               
-              {/* Bottom ornament with flowers */}
+              {/* Bottom ornament */}
               <div className="flex justify-center items-center space-x-2 mt-4">
-                <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-pink-300 to-rose-300"></div>
-                <span className="text-rose-400 text-sm">🌺</span>
-                <div className="w-8 h-0.5 bg-gradient-to-r from-rose-300 via-pink-300 to-transparent"></div>
+                <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-300 to-yellow-300"></div>
+                <span className="text-yellow-400 text-sm">🌟</span>
+                <div className="w-8 h-0.5 bg-gradient-to-r from-yellow-300 via-amber-300 to-transparent"></div>
               </div>
               
               {/* Subtle date or additional text area */}
-              <div className="text-[10px] text-rose-600/70 italic pt-1 font-light">
+              <div className="text-[10px] text-amber-600/70 italic pt-1 font-light">
                 Always in our hearts
               </div>
             </div>
