@@ -108,7 +108,7 @@ const FloatingContacts = () => {
               <div className="bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg p-2 mb-2">
                 <p className="text-sm text-gray-800 font-bold">+91 {ADMIN_WHATSAPP_NUMBER}</p>
               </div>
-              <p className="text-xs text-green-600 font-medium">⚡ Instant Response • Available 24/7</p>
+              <p className="text-xs text-green-600 font-medium">⚡ Instant Response </p>
             </div>
 
             <div className="flex gap-3 justify-center relative z-10">
