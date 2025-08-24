@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Sparkles, Trophy, Heart } from 'lucide-react';
+import { X, Sparkles } from 'lucide-react';
 
 const WelcomeMessage: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -121,7 +121,7 @@ const WelcomeMessage: React.FC = () => {
               <Sparkles className="w-6 h-6 text-orange-200 animate-pulse" />
             </div>
             <h2 className="text-xl font-bold bg-gradient-to-r from-orange-200 via-yellow-200 to-red-200 bg-clip-text text-transparent drop-shadow-lg">
-              Welcome to our Cricket Ground!
+              Welcome to Paradise Cricket Ground!
             </h2>
           </div>
           
@@ -130,17 +130,6 @@ const WelcomeMessage: React.FC = () => {
           </p>
           
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="flex items-center gap-2 text-orange-200/90 bg-orange-500/10 rounded-lg p-2 backdrop-blur-sm border border-orange-400/20">
-                <Trophy className="w-4 h-4 text-yellow-300" />
-                <span className="font-medium">Professional Grade Pitches</span>
-              </div>
-              <div className="flex items-center gap-2 text-orange-200/90 bg-red-500/10 rounded-lg p-2 backdrop-blur-sm border border-red-400/20">
-                <Heart className="w-4 h-4 text-pink-300" />
-                <span className="font-medium">Passionate Cricket Community</span>
-              </div>
-            </div>
-            
             <div className="bg-gradient-to-r from-orange-500/20 via-red-500/20 to-yellow-500/20 rounded-lg p-4 backdrop-blur-md border border-orange-400/20 shadow-inner text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <span className="text-2xl">🏏</span>
