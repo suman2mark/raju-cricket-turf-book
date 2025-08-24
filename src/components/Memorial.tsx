@@ -34,12 +34,12 @@ const Memorial: React.FC = () => {
                 <span className="drop-shadow-lg tracking-wide font-bold">Forever My Angel</span>
               </div>
               
-              {/* Floating celestial elements with deeper emotions */}
-              <div className="absolute -top-1 -right-1 text-rose-400 text-sm opacity-80 animate-pulse group-hover:opacity-100 transition-all duration-700" style={{animationDelay: '0s', filter: 'drop-shadow(0 0 4px rgba(244, 114, 182, 0.8))'}}>🌹</div>
+              {/* Clean celestial elements */}
+              <div className="absolute top-0 right-0 text-rose-400 text-sm opacity-80 animate-pulse group-hover:opacity-100 transition-all duration-700" style={{animationDelay: '0s', filter: 'drop-shadow(0 0 4px rgba(244, 114, 182, 0.8))'}}>✨</div>
               
-              <div className="absolute top-2 -left-2 text-pink-300 text-xs opacity-70 animate-bounce" style={{animationDelay: '1s', filter: 'drop-shadow(0 0 3px rgba(253, 164, 175, 0.9))'}}>💖</div>
+              <div className="absolute top-2 left-0 text-pink-300 text-xs opacity-70 animate-bounce" style={{animationDelay: '1s', filter: 'drop-shadow(0 0 3px rgba(253, 164, 175, 0.9))'}}>💖</div>
               
-              <div className="absolute -bottom-1 right-2 text-purple-400 text-sm opacity-85 animate-pulse" style={{animationDelay: '1.8s', filter: 'drop-shadow(0 0 4px rgba(196, 181, 253, 0.8))'}}>🌷</div>
+              <div className="absolute bottom-0 right-1 text-purple-400 text-sm opacity-85 animate-pulse" style={{animationDelay: '1.8s', filter: 'drop-shadow(0 0 4px rgba(196, 181, 253, 0.8))'}}>⭐</div>
               
               <div className="absolute top-1 left-1 text-rose-200 text-xs opacity-60 animate-ping" style={{animationDelay: '2.5s', filter: 'drop-shadow(0 0 3px rgba(251, 207, 232, 0.9))'}}>💕</div>
               
