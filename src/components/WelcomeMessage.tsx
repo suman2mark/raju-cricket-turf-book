@@ -23,12 +23,12 @@ const WelcomeMessage: React.FC = () => {
     // Show welcome message after a short delay
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, 6000);
+    }, 1000);
 
     // Auto-hide after 5 seconds
     const autoHideTimer = setTimeout(() => {
       setIsVisible(false);
-    }, 6000);
+    }, 5000);
 
     return () => {
       clearTimeout(timer);
