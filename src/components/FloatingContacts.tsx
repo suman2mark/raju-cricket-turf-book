@@ -19,11 +19,11 @@ const FloatingContacts: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-1/2 right-4 transform -translate-y-1/2 z-50 flex flex-col gap-3 pr-2">
+    <div className="fixed top-1/2 right-4 transform -translate-y-1/2 z-50 flex flex-col items-end gap-3">
       <TooltipProvider>
         {/* Contact Options - Show when open */}
         <div className={`transition-all duration-300 ease-out ${
-          isOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
+          isOpen ? 'opacity-100 translate-x-0 scale-100' : 'opacity-0 translate-x-4 scale-95 pointer-events-none'
         } flex flex-col gap-3 mb-3`}>
           
           {/* Contact Info Card */}
@@ -80,7 +80,7 @@ const FloatingContacts: React.FC = () => {
               aria-label={isOpen ? "Close contacts" : "Open contacts"}
             >
               {isOpen ? (
-                <div className="w-20 h-20 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-full flex items-center justify-center">
+                <div className="w-20 h-20 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full flex items-center justify-center">
                   <X className="w-8 h-8 transition-transform duration-200" />
                 </div>
               ) : (
