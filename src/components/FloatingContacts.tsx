@@ -3,7 +3,7 @@ import { Phone, MessageCircle, X } from 'lucide-react';
 
 const FloatingContacts = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const ADMIN_WHATSAPP_NUMBER = "9701399366";
+  const ADMIN_WHATSAPP_NUMBER = "9440836944";
 
   const handleWhatsAppClick = () => {
     window.open(`https://wa.me/${ADMIN_WHATSAPP_NUMBER}`, '_blank');
