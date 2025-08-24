@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { X, Sparkles } from 'lucide-react';
+import { X, Sparkles, Calendar } from 'lucide-react';
+import { getBookingsForDate } from '@/services/bookingService';
 
 const WelcomeMessage: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [todayBookings, setTodayBookings] = useState(0);
 
   useEffect(() => {
+    // Fetch today's bookings
+    const fetchTodayBookings = async () => {
+      try {
+        const bookings = await getBookingsForDate(new Date());
+        setTodayBookings(bookings.length);
+      } catch (error) {
+        console.error('Failed to fetch today\'s bookings:', error);
+        setTodayBookings(0);
+      }
+    };
+
+    fetchTodayBookings();
+
     // Show welcome message after a short delay
     const timer = setTimeout(() => {
       setIsVisible(true);
@@ -45,12 +60,18 @@ const WelcomeMessage: React.FC = () => {
           <h2 className="text-xl font-bold">Welcome to Our Cricket Ground!</h2>
         </div>
         
-        <p className="text-white/90 leading-relaxed">
+        <p className="text-white/90 leading-relaxed mb-3">
           Experience the thrill of cricket at our premium facility. Book your slot now and enjoy world-class pitches with modern amenities!
         </p>
         
-        <div className="mt-4 text-sm text-white/80 font-medium">
-          🏏 Premium Cricket Experience Awaits You
+        <div className="flex items-center justify-between gap-4 text-sm">
+          <div className="flex items-center gap-2 text-white/90">
+            <Calendar className="w-4 h-4" />
+            <span>Today's Bookings: <span className="font-bold text-white">{todayBookings}</span></span>
+          </div>
+          <div className="text-white/80 font-medium">
+            🏏 Premium Cricket Experience
+          </div>
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ const FloatingContacts: React.FC = () => {
   };
 
   return (
-    <div className="fixed right-4 bottom-17 z-60 flex flex-col items-center gap-3">
+    <div className="fixed right-4 bottom-1/2 transform translate-y-1/2 z-50 flex flex-col items-center gap-3">
       <TooltipProvider>
         {/* Contact Options - Show when open */}
         <div className={`transition-all duration-300 ease-out ${
@@ -76,18 +76,18 @@ const FloatingContacts: React.FC = () => {
           <TooltipTrigger asChild>
             <button
               onClick={toggleContacts}
-              className="w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center relative overflow-hidden group"
+              className="w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center relative overflow-hidden group"
               aria-label={isOpen ? "Close contacts" : "Open contacts"}
             >
               {isOpen ? (
-                <div className="w-14 h-14 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-full flex items-center justify-center">
-                  <X className="w-6 h-6 transition-transform duration-200" />
+                <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-full flex items-center justify-center">
+                  <X className="w-7 h-7 transition-transform duration-200" />
                 </div>
               ) : (
                 <img 
                   src="/lovable-uploads/225b815b-f9d5-4202-b424-a8e4aebc0fa3.png" 
                   alt="Contact us" 
-                  className="w-14 h-14 rounded-full transition-transform duration-200 hover:scale-110"
+                  className="w-16 h-16 rounded-full transition-transform duration-200 hover:scale-110"
                 />
               )}
             </button>
