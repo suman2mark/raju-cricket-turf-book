@@ -13,7 +13,7 @@ const WelcomeMessage: React.FC = () => {
     // Auto-hide after 8 seconds (increased for fire effect)
     const autoHideTimer = setTimeout(() => {
       setIsVisible(false);
-    }, 8000);
+    }, 5000);
 
     return () => {
       clearTimeout(timer);
