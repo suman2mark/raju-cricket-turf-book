@@ -19,7 +19,7 @@ const FloatingContacts: React.FC = () => {
   };
 
   return (
-    <div className="fixed right-4 bottom-1/2 transform translate-y-1/2 z-50 flex flex-col items-center gap-3">
+    <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 flex flex-col items-center gap-3">
       <TooltipProvider>
         {/* Contact Options - Show when open */}
         <div className={`transition-all duration-300 ease-out ${
@@ -76,19 +76,32 @@ const FloatingContacts: React.FC = () => {
           <TooltipTrigger asChild>
             <button
               onClick={toggleContacts}
-              className="w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center relative overflow-hidden group"
+              className="w-20 h-20 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center relative overflow-hidden group"
               aria-label={isOpen ? "Close contacts" : "Open contacts"}
             >
               {isOpen ? (
-                <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-full flex items-center justify-center">
-                  <X className="w-7 h-7 transition-transform duration-200" />
+                <div className="w-20 h-20 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-full flex items-center justify-center">
+                  <X className="w-8 h-8 transition-transform duration-200" />
                 </div>
               ) : (
-                <img 
-                  src="/lovable-uploads/225b815b-f9d5-4202-b424-a8e4aebc0fa3.png" 
-                  alt="Contact us" 
-                  className="w-16 h-16 rounded-full transition-transform duration-200 hover:scale-110"
-                />
+                <div className="relative w-20 h-20 rounded-full overflow-hidden">
+                  {/* Fireball animation background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-red-500 to-yellow-400 rounded-full animate-pulse"></div>
+                  <div className="absolute inset-0.5 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 rounded-full animate-spin-slow"></div>
+                  <div className="absolute inset-1 bg-gradient-to-r from-yellow-400 via-red-400 to-orange-500 rounded-full animate-bounce-slow opacity-80"></div>
+                  
+                  {/* Icon image */}
+                  <img 
+                    src="/lovable-uploads/225b815b-f9d5-4202-b424-a8e4aebc0fa3.png" 
+                    alt="Contact us" 
+                    className="relative w-20 h-20 rounded-full transition-transform duration-200 hover:scale-105 z-10"
+                  />
+                  
+                  {/* Fire particles */}
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full animate-ping opacity-60"></div>
+                  <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-red-400 rounded-full animate-ping opacity-40 animation-delay-200"></div>
+                  <div className="absolute top-1 -left-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-50 animation-delay-400"></div>
+                </div>
               )}
             </button>
           </TooltipTrigger>
