@@ -63,7 +63,24 @@ const Hero: React.FC<HeroProps> = ({
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg group relative overflow-hidden" onClick={() => scrollToSection('booking')}>
+            <Button 
+              size="lg" 
+              className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg group relative overflow-hidden" 
+              onClick={() => {
+                scrollToSection('booking');
+                // Extra smooth scroll for mobile
+                setTimeout(() => {
+                  const element = document.getElementById('booking');
+                  if (element) {
+                    element.scrollIntoView({ 
+                      behavior: 'smooth', 
+                      block: 'start',
+                      inline: 'nearest' 
+                    });
+                  }
+                }, 100);
+              }}
+            >
               <span className="relative z-10 flex items-center">
                 {translate('book_now')}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -96,7 +113,23 @@ const Hero: React.FC<HeroProps> = ({
       </div>
       
       <div className="absolute bottom-8 left-0 right-0 flex justify-center animate-bounce">
-        <button onClick={() => scrollToSection('booking')} className="text-white/80 hover:text-white flex flex-col items-center">
+        <button 
+          onClick={() => {
+            scrollToSection('booking');
+            // Extra smooth scroll for mobile
+            setTimeout(() => {
+              const element = document.getElementById('booking');
+              if (element) {
+                element.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest' 
+                });
+              }
+            }, 100);
+          }} 
+          className="text-white/80 hover:text-white flex flex-col items-center"
+        >
           <span className="mb-2">{translate('scroll_down') || 'Scroll Down'}</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 5v14M5 12l7 7 7-7" />

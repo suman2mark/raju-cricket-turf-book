@@ -10,7 +10,15 @@ const WelcomeMessage: React.FC = () => {
       setIsVisible(true);
     }, 1000);
 
-    return () => clearTimeout(timer);
+    // Auto-hide after 5 seconds
+    const autoHideTimer = setTimeout(() => {
+      setIsVisible(false);
+    }, 6000);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(autoHideTimer);
+    };
   }, []);
 
   const handleClose = () => {

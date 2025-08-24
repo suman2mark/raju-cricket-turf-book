@@ -51,7 +51,20 @@ const Header: React.FC<HeaderProps> = ({
             {translate('contact_now')}
           </Button>
 
-          <Button size="sm" className={`${isScrolled ? 'bg-primary hover:bg-primary/90 text-white' : 'bg-white text-cricket-dark hover:bg-white/90'} hidden md:flex transition-colors duration-300`} onClick={() => scrollToSection('booking')}>
+          <Button size="sm" className={`${isScrolled ? 'bg-primary hover:bg-primary/90 text-white' : 'bg-white text-cricket-dark hover:bg-white/90'} hidden md:flex transition-colors duration-300`} onClick={() => {
+            scrollToSection('booking');
+            // Extra smooth scroll for mobile
+            setTimeout(() => {
+              const element = document.getElementById('booking');
+              if (element) {
+                element.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest' 
+                });
+              }
+            }, 100);
+          }}>
             {translate('book_now')}
           </Button>
 
@@ -77,6 +90,17 @@ const Header: React.FC<HeaderProps> = ({
           {['home', 'booking', 'pricing', 'contact', 'location'].map(section => <button key={section} onClick={() => {
           scrollToSection(section);
           document.getElementById('mobile-menu')?.classList.add('hidden');
+          // Extra smooth scroll for mobile
+          setTimeout(() => {
+            const element = document.getElementById(section);
+            if (element) {
+              element.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest' 
+              });
+            }
+          }, 100);
         }} className="text-gray-700 py-2 px-4 hover:bg-gray-100 rounded-md flex items-center justify-between">
               {translate(section)}
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
