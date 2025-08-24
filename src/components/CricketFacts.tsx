@@ -10,69 +10,145 @@ interface CricketFact {
 }
 
 const cricketFacts: CricketFact[] = [
+  // Indian Cricket Legends
   {
     id: 1,
-    fact: "The highest individual score in Test cricket is 400* by Brian Lara",
+    fact: "Sachin Tendulkar scored 100 international centuries - the only player to achieve this feat",
     category: 'record',
     icon: Trophy
   },
   {
     id: 2,
-    fact: "A cricket ball can travel at speeds of over 100 mph (160 km/h)",
-    category: 'fun',
-    icon: Target
+    fact: "MS Dhoni is the only captain to win all three ICC tournaments (World Cup, T20 World Cup, Champions Trophy)",
+    category: 'record',
+    icon: Trophy
   },
   {
     id: 3,
-    fact: "The longest Test match lasted 12 days between England and South Africa in 1939",
-    category: 'history',
-    icon: Clock
-  },
-  {
-    id: 4,
-    fact: "Cricket is played by over 2.5 billion fans worldwide",
-    category: 'stats',
-    icon: Users
-  },
-  {
-    id: 5,
-    fact: "The fastest recorded delivery was 161.3 km/h by Shoaib Akhtar",
+    fact: "Virat Kohli has the highest batting average in successful ODI run chases (91.73)",
     category: 'record',
     icon: Target
   },
   {
-    id: 6,
-    fact: "Cricket was once an Olympic sport (1900 Olympics in Paris)",
+    id: 4,
+    fact: "Kapil Dev's 175* against Zimbabwe in 1983 World Cup is considered one of the greatest ODI innings",
     category: 'history',
     icon: Trophy
   },
   {
-    id: 7,
-    fact: "A cricket bat can't be wider than 4.25 inches (10.8 cm)",
-    category: 'fun',
+    id: 5,
+    fact: "India won their first Cricket World Cup in 1983 under Kapil Dev's captaincy",
+    category: 'history',
+    icon: Trophy
+  },
+  {
+    id: 6,
+    fact: "Rohit Sharma holds the record for highest individual score in ODIs (264)",
+    category: 'record',
     icon: Target
   },
   {
+    id: 7,
+    fact: "Anil Kumble took all 10 wickets in an innings against Pakistan at Delhi in 1999",
+    category: 'record',
+    icon: Trophy
+  },
+  {
     id: 8,
-    fact: "The first recorded cricket match was in 1697 in Sussex, England",
-    category: 'history',
+    fact: "IPL is the most-attended cricket league in the world with over 100 million viewers",
+    category: 'stats',
+    icon: Users
+  },
+  {
+    id: 9,
+    fact: "Jasprit Bumrah has the best bowling average for an Indian pacer in Test cricket",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 10,
+    fact: "Rahul Dravid faced 31,258 balls in Test cricket - the most by any batsman",
+    category: 'stats',
     icon: Clock
+  },
+  {
+    id: 11,
+    fact: "VVS Laxman's 281 against Australia at Eden Gardens is called the greatest Test innings by an Indian",
+    category: 'history',
+    icon: Trophy
+  },
+  {
+    id: 12,
+    fact: "Sunil Gavaskar was the first batsman to score 10,000 runs in Test cricket",
+    category: 'history',
+    icon: Trophy
+  },
+  {
+    id: 13,
+    fact: "India has never lost a Test series at home to Australia since 1969",
+    category: 'stats',
+    icon: Trophy
+  },
+  {
+    id: 14,
+    fact: "Harbhajan Singh is the only Indian spinner to take a hat-trick in Test cricket",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 15,
+    fact: "The 2011 World Cup final was watched by 700 million people worldwide",
+    category: 'stats',
+    icon: Users
+  },
+  {
+    id: 16,
+    fact: "Rishabh Pant became the fastest Indian wicket-keeper to score 1000 Test runs",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 17,
+    fact: "Mohammed Shami has the best strike rate among Indian fast bowlers in World Cups",
+    category: 'stats',
+    icon: Target
+  },
+  {
+    id: 18,
+    fact: "Sourav Ganguly transformed Indian cricket's aggressive approach in overseas conditions",
+    category: 'history',
+    icon: Trophy
+  },
+  {
+    id: 19,
+    fact: "India is the only team to win the World Cup at home after England (1975) and Australia (2015)",
+    category: 'record',
+    icon: Trophy
+  },
+  {
+    id: 20,
+    fact: "The Eden Gardens in Kolkata can hold 66,000 spectators - one of cricket's largest venues",
+    category: 'fun',
+    icon: Users
   }
 ];
 
 const CricketFacts: React.FC = () => {
   const [currentFact, setCurrentFact] = useState<CricketFact>(cricketFacts[0]);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isSliding, setIsSliding] = useState(false);
 
   useEffect(() => {
-    setIsVisible(true);
     const interval = setInterval(() => {
-      setCurrentFact(prev => {
-        const currentIndex = cricketFacts.findIndex(fact => fact.id === prev.id);
-        const nextIndex = (currentIndex + 1) % cricketFacts.length;
-        return cricketFacts[nextIndex];
-      });
-    }, 5000); // Change fact every 5 seconds
+      setIsSliding(true);
+      setTimeout(() => {
+        setCurrentFact(prev => {
+          const currentIndex = cricketFacts.findIndex(fact => fact.id === prev.id);
+          const nextIndex = (currentIndex + 1) % cricketFacts.length;
+          return cricketFacts[nextIndex];
+        });
+        setIsSliding(false);
+      }, 300);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, []);
@@ -97,39 +173,31 @@ const CricketFacts: React.FC = () => {
           <p className="text-lg text-gray-600">Discover amazing cricket trivia while you book your session</p>
         </div>
         
-        <div className="max-w-2xl mx-auto">
-          <Card className={`transition-all duration-500 hover:shadow-lg ${isVisible ? 'animate-fade-in' : ''}`}>
-            <CardContent className="p-8">
-              <div className="flex items-start gap-6">
-                <div className={`p-3 rounded-full ${getCategoryColor(currentFact.category)} flex-shrink-0`}>
-                  <IconComponent className="w-6 h-6" />
-                </div>
-                
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide ${getCategoryColor(currentFact.category)}`}>
-                      {currentFact.category}
-                    </span>
+        <div className="max-w-3xl mx-auto">
+          <Card className="transition-all duration-500 hover:shadow-lg overflow-hidden">
+            <CardContent className="p-0">
+              <div className={`transform transition-all duration-300 ease-in-out ${
+                isSliding ? 'translate-x-[-100%] opacity-0' : 'translate-x-0 opacity-100'
+              }`}>
+                <div className="p-8">
+                  <div className="flex items-start gap-6">
+                    <div className={`p-4 rounded-full ${getCategoryColor(currentFact.category)} flex-shrink-0`}>
+                      <IconComponent className="w-7 h-7" />
+                    </div>
+                    
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className={`px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide ${getCategoryColor(currentFact.category)}`}>
+                          {currentFact.category}
+                        </span>
+                      </div>
+                      
+                      <p className="text-xl text-gray-800 leading-relaxed font-medium">
+                        {currentFact.fact}
+                      </p>
+                    </div>
                   </div>
-                  
-                  <p className="text-lg text-gray-800 leading-relaxed font-medium">
-                    {currentFact.fact}
-                  </p>
                 </div>
-              </div>
-              
-              {/* Progress indicator */}
-              <div className="mt-6 flex gap-2 justify-center">
-                {cricketFacts.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`h-1 w-8 rounded-full transition-all duration-300 ${
-                      cricketFacts.findIndex(fact => fact.id === currentFact.id) === index
-                        ? 'bg-primary'
-                        : 'bg-gray-200'
-                    }`}
-                  />
-                ))}
               </div>
             </CardContent>
           </Card>

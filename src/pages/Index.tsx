@@ -15,6 +15,7 @@ import Memorial from '@/components/Memorial';
 import FloatingContacts from '@/components/FloatingContacts';
 import DailyBookingDashboard from '@/components/DailyBookingDashboard';
 import CricketFacts from '@/components/CricketFacts';
+import WelcomeMessage from '@/components/WelcomeMessage';
 import { Toaster } from 'sonner';
 
 // The main component that uses the language context
@@ -50,10 +51,13 @@ const MainContent = () => {
       <Toaster position="top-center" />
       <Header scrollToSection={scrollToSection} />
       
+      {/* Welcome message for new visitors */}
+      <WelcomeMessage />
+      
       {/* Memorial placed at the top left */}
       <Memorial />
       
-      {/* Floating contact buttons on the right side */}
+      {/* Floating contact buttons in the center */}
       <FloatingContacts />
       
       <main className="flex-grow">
