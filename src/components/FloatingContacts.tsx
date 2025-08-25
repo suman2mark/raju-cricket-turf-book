@@ -20,7 +20,7 @@ const FloatingContacts = () => {
   return (
     <>
       {/* Custom CSS for animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes ringPulse {
           0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
           50% { transform: scale(1.3); opacity: 0.5; box-shadow: 0 0 0 10px rgba(34, 197, 94, 0.3); }

@@ -88,7 +88,20 @@ const Hero: React.FC<HeroProps> = ({
               <span className="absolute inset-0 bg-white/20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
             </Button>
             
-            <Button variant="outline" size="lg" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border-white/30 text-white px-8 py-6 text-lg group" onClick={() => scrollToSection('pricing')}>
+            <Button variant="outline" size="lg" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border-white/30 text-white px-8 py-6 text-lg group" onClick={() => {
+              scrollToSection('booking');
+              // Extra smooth scroll for mobile
+              setTimeout(() => {
+                const element = document.getElementById('booking');
+                if (element) {
+                  element.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest' 
+                  });
+                }
+              }, 100);
+            }}>
               <span className="relative z-10">{translate('view_slots')}</span>
               <span className="absolute inset-0 bg-white/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
             </Button>
