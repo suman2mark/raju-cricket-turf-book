@@ -129,6 +129,37 @@
   .shadow-elegant {
     box-shadow: var(--shadow-elegant);
   }
+  
+  /* Animation utilities for booking success */
+  .animate-scale-in {
+    animation: scale-in 0.5s ease-out;
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out;
+  }
+  
+  @keyframes scale-in {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 @keyframes bounce-slow {
