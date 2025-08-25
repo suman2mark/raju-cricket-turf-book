@@ -71,65 +71,310 @@ const cricketFacts: CricketFact[] = [
     category: 'stats',
     icon: Clock
   },
+  // World Cricket Records
   {
     id: 11,
-    fact: "VVS Laxman's 281 against Australia at Eden Gardens is called the greatest Test innings by an Indian",
-    category: 'history',
+    fact: "Brian Lara holds the record for highest individual score in Test cricket (400*) and First-class cricket (501*)",
+    category: 'record',
     icon: Trophy
   },
   {
     id: 12,
-    fact: "Sunil Gavaskar was the first batsman to score 10,000 runs in Test cricket",
-    category: 'history',
-    icon: Trophy
+    fact: "Jim Laker took 19 wickets in a match for England vs Australia in 1956 - still unbeaten",
+    category: 'record',
+    icon: Target
   },
   {
     id: 13,
-    fact: "India has never lost a Test series at home to Australia since 1969",
-    category: 'stats',
+    fact: "The West Indies dominated world cricket for 15 years, remaining unbeaten in Test series from 1980-1995",
+    category: 'history',
     icon: Trophy
   },
   {
     id: 14,
-    fact: "Harbhajan Singh is the only Indian spinner to take a hat-trick in Test cricket",
+    fact: "Don Bradman's Test batting average of 99.94 is considered statistically impossible to beat",
     category: 'record',
-    icon: Target
+    icon: Trophy
   },
   {
     id: 15,
-    fact: "The 2011 World Cup final was watched by 700 million people worldwide",
-    category: 'stats',
-    icon: Users
-  },
-  {
-    id: 16,
-    fact: "Rishabh Pant became the fastest Indian wicket-keeper to score 1000 Test runs",
+    fact: "Muttiah Muralitharan took 800 Test wickets - 92 more than the second-highest wicket-taker",
     category: 'record',
     icon: Target
   },
   {
+    id: 16,
+    fact: "The shortest completed Test match lasted only 5.5 hours (England vs Australia, 1932)",
+    category: 'fun',
+    icon: Clock
+  },
+  {
     id: 17,
-    fact: "Mohammed Shami has the best strike rate among Indian fast bowlers in World Cups",
-    category: 'stats',
+    fact: "AB de Villiers scored the fastest ODI century in just 31 balls against the West Indies",
+    category: 'record',
     icon: Target
   },
   {
     id: 18,
-    fact: "Sourav Ganguly transformed Indian cricket's aggressive approach in overseas conditions",
-    category: 'history',
-    icon: Trophy
+    fact: "Shahid Afridi hit the longest six in cricket history - measured at 158 meters",
+    category: 'record',
+    icon: Target
   },
   {
     id: 19,
-    fact: "India is the only team to win the World Cup at home after England (1975) and Australia (2015)",
+    fact: "The Melbourne Cricket Ground (MCG) holds the record for highest attendance - 93,013 in the 2015 World Cup final",
+    category: 'stats',
+    icon: Users
+  },
+  {
+    id: 20,
+    fact: "West Indies' Clive Lloyd was the first captain to win back-to-back World Cups (1975 & 1979)",
+    category: 'history',
+    icon: Trophy
+  },
+  // Modern Cricket Milestones
+  {
+    id: 21,
+    fact: "Chris Gayle holds the record for most sixes in international cricket (553)",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 22,
+    fact: "Lasith Malinga is the only bowler to take 4 wickets in 4 balls in both ODI and T20I cricket",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 23,
+    fact: "Australia has won the Cricket World Cup 5 times - more than any other nation",
     category: 'record',
     icon: Trophy
   },
   {
-    id: 20,
-    fact: "The Eden Gardens in Kolkata can hold 66,000 spectators - one of cricket's largest venues",
+    id: 24,
+    fact: "The first-ever Test match was played between England and Australia in 1877 at the MCG",
+    category: 'history',
+    icon: Clock
+  },
+  {
+    id: 25,
+    fact: "Pakistan's Babar Azam became the fastest to score 1000 runs as T20I captain (26 innings)",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 26,
+    fact: "New Zealand's Martin Guptill scored the highest World Cup individual score (237*) in 2015",
+    category: 'record',
+    icon: Trophy
+  },
+  {
+    id: 27,
+    fact: "England scored 498/4 in an ODI against Netherlands - the highest team total ever",
+    category: 'record',
+    icon: Trophy
+  },
+  {
+    id: 28,
+    fact: "The Ashes urn is only 15cm tall and contains the ashes of burnt cricket bails",
+    category: 'fun',
+    icon: Trophy
+  },
+  {
+    id: 29,
+    fact: "Afghanistan achieved full ICC membership in just 12 years from Associate status",
+    category: 'history',
+    icon: Users
+  },
+  {
+    id: 30,
+    fact: "Bangladesh's Shakib Al Hasan is the only player to score 3000+ runs and take 200+ wickets in ODIs",
+    category: 'record',
+    icon: Trophy
+  },
+  // Fascinating Cricket Trivia
+  {
+    id: 31,
+    fact: "A cricket ball can reach speeds of 160+ km/h and weighs exactly 163 grams",
+    category: 'fun',
+    icon: Target
+  },
+  {
+    id: 32,
+    fact: "The cricket bat can be maximum 96.52cm long and 10.8cm wide",
+    category: 'fun',
+    icon: Target
+  },
+  {
+    id: 33,
+    fact: "Lord's Cricket Ground has a 8-degree slope from north to south across the pitch",
     category: 'fun',
     icon: Users
+  },
+  {
+    id: 34,
+    fact: "The word 'cricket' possibly comes from the Old French 'criquet' meaning stick",
+    category: 'history',
+    icon: Clock
+  },
+  {
+    id: 35,
+    fact: "A cricket match can theoretically last forever if no wickets fall and no declarations are made",
+    category: 'fun',
+    icon: Clock
+  },
+  {
+    id: 36,
+    fact: "Zimbabwe's Andy Flower is the only wicket-keeper to score centuries in both innings of a Test match",
+    category: 'record',
+    icon: Trophy
+  },
+  {
+    id: 37,
+    fact: "The pink ball used in day-night Tests was invented in 2009 and first used internationally in 2015",
+    category: 'history',
+    icon: Target
+  },
+  {
+    id: 38,
+    fact: "Sri Lanka's Kumar Sangakkara scored 4 consecutive ODI centuries in the 2015 World Cup",
+    category: 'record',
+    icon: Trophy
+  },
+  {
+    id: 39,
+    fact: "The Super Over was introduced in 2008 and first used in international cricket in 2009",
+    category: 'history',
+    icon: Clock
+  },
+  {
+    id: 40,
+    fact: "South Africa's Jacques Kallis scored 13,289 Test runs and took 292 wickets - cricket's greatest all-rounder",
+    category: 'record',
+    icon: Trophy
+  },
+  // Recent Records and Achievements
+  {
+    id: 41,
+    fact: "Jos Buttler holds the record for fastest T20I century (35 balls) and fastest T20I fifty (18 balls)",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 42,
+    fact: "Nepal's Dipendra Singh Airee hit 6 sixes in an over during a T20I match in 2024",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 43,
+    fact: "The ICC Women's T20 World Cup 2020 final was watched by 86 million viewers",
+    category: 'stats',
+    icon: Users
+  },
+  {
+    id: 44,
+    fact: "Dubai International Cricket Stadium has hosted the most T20Is (over 80 matches)",
+    category: 'stats',
+    icon: Users
+  },
+  {
+    id: 45,
+    fact: "Glenn Maxwell's 201* off 128 balls is the highest individual score in a World Cup chase",
+    category: 'record',
+    icon: Trophy
+  },
+  {
+    id: 46,
+    fact: "Trent Boult was the first bowler to take 4 wickets in the first over of a T20I match",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 47,
+    fact: "The Decision Review System (DRS) was first used in Test cricket in 2008",
+    category: 'history',
+    icon: Target
+  },
+  {
+    id: 48,
+    fact: "Ireland's Kevin O'Brien scored the fastest World Cup century (50 balls) in 2011",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 49,
+    fact: "The ICC now has 104 member countries, with cricket played on every continent",
+    category: 'stats',
+    icon: Users
+  },
+  {
+    id: 50,
+    fact: "Yuvraj Singh hit 6 sixes in an over against England's Stuart Broad in the 2007 T20 World Cup",
+    category: 'record',
+    icon: Trophy
+  },
+  // Unique Cricket Facts
+  {
+    id: 51,
+    fact: "The highest cricket ground is in Chail, India, at 2,444 meters above sea level",
+    category: 'fun',
+    icon: Users
+  },
+  {
+    id: 52,
+    fact: "Cricket was part of the Olympics only once, in 1900, where England won gold",
+    category: 'history',
+    icon: Trophy
+  },
+  {
+    id: 53,
+    fact: "The bail must be completely removed from the stumps for a batsman to be run out or bowled",
+    category: 'fun',
+    icon: Target
+  },
+  {
+    id: 54,
+    fact: "Bowling underarm was legal until 1981 when Australia used it controversially against New Zealand",
+    category: 'history',
+    icon: Clock
+  },
+  {
+    id: 55,
+    fact: "The longest cricket match lasted 12 days (including rest days) between England and South Africa in 1939",
+    category: 'record',
+    icon: Clock
+  },
+  {
+    id: 56,
+    fact: "Herschelle Gibbs was the first player to hit 6 sixes in an over in ODI cricket (2007 World Cup)",
+    category: 'record',
+    icon: Target
+  },
+  {
+    id: 57,
+    fact: "The term 'hat-trick' originated from cricket and referred to a bowler getting a hat for taking 3 wickets",
+    category: 'history',
+    icon: Trophy
+  },
+  {
+    id: 58,
+    fact: "Women's cricket has been played since the 18th century, with the first recorded match in 1745",
+    category: 'history',
+    icon: Users
+  },
+  {
+    id: 59,
+    fact: "The Dubai International Stadium was built on reclaimed land from the Persian Gulf",
+    category: 'fun',
+    icon: Users
+  },
+  {
+    id: 60,
+    fact: "Garfield Sobers was the first player to hit 6 sixes in an over in first-class cricket (1968)",
+    category: 'record',
+    icon: Target
   }
 ];
 
