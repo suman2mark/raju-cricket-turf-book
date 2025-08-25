@@ -89,10 +89,10 @@ const Hero: React.FC<HeroProps> = ({
             </Button>
             
             <Button variant="outline" size="lg" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border-white/30 text-white px-8 py-6 text-lg group" onClick={() => {
-              scrollToSection('booking');
+              scrollToSection('daily-bookings');
               // Extra smooth scroll for mobile
               setTimeout(() => {
-                const element = document.getElementById('booking');
+                const element = document.getElementById('daily-bookings');
                 if (element) {
                   element.scrollIntoView({ 
                     behavior: 'smooth', 
