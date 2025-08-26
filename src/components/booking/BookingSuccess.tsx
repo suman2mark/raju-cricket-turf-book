@@ -16,15 +16,6 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({
   bookingData, 
   onResetForm 
 }) => {
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  
-  // Cricket shot videos array
-  const cricketVideos = [
-    '/lovable-uploads/peddi2.mp4',
-    '/lovable-uploads/peddi3.gif',
-    '/lovable-uploads/peddi4.gif'
-  ];
-
   // Auto-generate invoice PDF when component mounts
   useEffect(() => {
     try {
@@ -38,15 +29,6 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({
       console.error("Error auto-generating PDF:", error);
     }
   }, [bookingData]);
-
-  // Auto-rotate cricket videos
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % cricketVideos.length);
-    }, 3000);
-    
-    return () => clearInterval(interval);
-  }, [cricketVideos.length]);
 
   // Calculate the final price with discount if applicable
   const calculateFinalPrice = () => {
@@ -74,26 +56,9 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-blue-50 p-8 rounded-xl shadow-xl border border-primary/20">
-      {/* Cricket Animation Background */}
-      <div className="absolute top-4 right-4 w-32 h-32 rounded-full overflow-hidden shadow-lg border-4 border-primary/20">
-        {cricketVideos[currentVideoIndex].endsWith('.mp4') ? (
-          <video
-            key={currentVideoIndex}
-            autoPlay
-            muted
-            loop
-            className="w-full h-full object-cover"
-          >
-            <source src={cricketVideos[currentVideoIndex]} type="video/mp4" />
-          </video>
-        ) : (
-          <img
-            key={currentVideoIndex}
-            src={cricketVideos[currentVideoIndex]}
-            alt="Cricket shot animation"
-            className="w-full h-full object-cover"
-          />
-        )}
+      {/* Cricket Static Animation */}
+      <div className="absolute top-4 right-4 w-24 h-24 rounded-full bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center shadow-lg animate-pulse">
+        <div className="text-4xl">🏏</div>
       </div>
 
       {/* Animated Elements */}
